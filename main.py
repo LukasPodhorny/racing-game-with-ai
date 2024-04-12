@@ -30,4 +30,5 @@ while True:
               
     pygame.display.flip()
     fpsClock.tick(fps)
+    # tajna zprava
 
