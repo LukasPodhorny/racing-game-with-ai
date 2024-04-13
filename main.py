@@ -11,7 +11,7 @@ fpsClock = pygame.time.Clock()
 pygame.display.set_caption("Auto, který jede")
 screen = pygame.display.set_mode((1020,820))
 
-car_img = pygame.transform.scale_by(pygame.image.load("car.png"), 0.25)
+car_img = pygame.transform.scale_by(pygame.image.load("images/car.png"), 0.25)
 mycar = car_module.car_object(car_img, fps)
  
 while True:
@@ -30,6 +30,3 @@ while True:
               
     pygame.display.flip()
     fpsClock.tick(fps)
-    # tajna zprava
-    # tajna zprava problem
-    # tajna zprava 3
