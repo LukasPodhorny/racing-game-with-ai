@@ -32,3 +32,4 @@ while True:
     fpsClock.tick(fps)
     # tajna zprava
     # tajna zprava 2
+    # tajna zprava 3
