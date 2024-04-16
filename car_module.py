@@ -8,7 +8,7 @@ class car_object:
         
         self.carx = 100
         self.cary = 100
-        self.rotation = 0
+        self.angle = 20
         self.wheel_rotation = 0  # hodnota mezi 0 - neco jako 0.7 !ne jedna!
 
         self.pix_per_sec = 100
@@ -32,7 +32,7 @@ class car_object:
 
     def show(self, screen):
 
-        screen.blit(pygame.transform.rotate(self.img, self.rotation), (self.carx + (self.img.get_width() / 2), self.cary + (self.img.get_height() / 2)))
+        screen.blit(pygame.transform.rotate(self.img, self.angle), (self.carx + (self.img.get_width() / 2), self.cary + (self.img.get_height() / 2)))
         
     
     def update(self):
@@ -40,7 +40,7 @@ class car_object:
         v_input = car_object.get_input()[1]
 
         self.speed = (self.pix_per_sec/self.fps) # udelat by jel dopredu pouze stranou kterou faceuje
-        self.rotation += -h_input
+        self.angle += -h_input
         pass
 
 
