@@ -6,8 +6,8 @@ class car_object:
         self.img = img
         self.fps = fps
         
-        self.carx = 100
-        self.cary = 100
+        self.carx = 0
+        self.cary = 0
         self.angle = 0
         self.wheel_rotation = 0  # hodnota mezi 0 - neco jako 0.7 !ne jedna!
 
@@ -49,11 +49,11 @@ class car_object:
     
 
     def show(self, screen):
-        self.display(screen, self.img, (self.carx, self.cary), (50, 50), self.angle)
+        self.display(screen, self.img, (self.carx, self.cary), (150, 250), self.angle)
         
     
     def update(self):
-        h_input = car_object.get_input()[0]
+        h_input = car_object.get_input()[0] 
         v_input = car_object.get_input()[1]
                          
         self.speed = (self.pix_per_sec/self.fps) # udelat by jel dopredu pouze stranou kterou faceuje
