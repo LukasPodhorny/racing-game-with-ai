@@ -11,7 +11,7 @@ fpsClock = pygame.time.Clock()
 pygame.display.set_caption("Auto, který jede")
 screen = pygame.display.set_mode((1020,820))
 
-car_img = pygame.transform.scale_by(pygame.image.load("images/car.png"), 0.25)
+car_img = pygame.transform.scale_by(pygame.image.load("images/cardownsize.png"), 1)
 mycar = car_module.car_object(car_img, fps)
  
 while True:
