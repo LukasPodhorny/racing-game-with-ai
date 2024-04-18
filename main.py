@@ -5,13 +5,13 @@ from pygame.locals import *
  
 pygame.init()
  
-fps = 60
+fps = 90
 fpsClock = pygame.time.Clock()
 
-pygame.display.set_caption("Auto, který jede")
-screen = pygame.display.set_mode((1020,820))
+pygame.display.set_caption("racing game")
+screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN, vsync = 1)
 
-car_img = pygame.transform.smoothscale_by(pygame.image.load("images/car.png"), 0.05)
+car_img = pygame.transform.smoothscale_by(pygame.image.load("images/car.png").convert_alpha(), 0.04)
 mycar = car_module.car_object(car_img, fps)
  
 while True:
@@ -27,6 +27,5 @@ while True:
     mycar.show(screen)
 
     # hra
-              
     pygame.display.flip()
     fpsClock.tick(fps)

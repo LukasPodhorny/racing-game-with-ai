@@ -12,8 +12,18 @@ class car_object:
         self.angle = 0
         self.wheel_rotation = 0  # hodnota mezi 0 - neco jako 0.7 !ne jedna!
 
-        self.pix_per_sec = 100
+        self.max_speed = 8 # pixels per second to do
+        self.max_back_speed = -3
+        self.acceleration = 0.05
+        self.decceleration = 0.02
+        self.braking = 0.125
+        self.activate_turning_speed = 0.5
+        self.turning_speed = 1
         self.speed = 0
+    
+    def normalize(self, vector):
+        magnitude = math.sqrt(math.pow(vector[0], 2) + math.pow(vector[1], 2))
+        return (vector[0]/magnitude, vector[1]/magnitude)
     
     def get_input():
         keys = pygame.key.get_pressed()
@@ -38,18 +48,27 @@ class car_object:
         
     
     def update(self):
-        input = car_object.get_input()
+        input = car_object.get_input() # input bud provede ai, nebo clovek
 
-        self.angle += -input[0]
-        fwd_dir = (math.cos(self.angle), math.sin(self.angle))
+        if input[1] < 0:
+            self.speed = min(self.max_speed,self.speed + self.acceleration) #w
+        elif input[1] > 0:
+            self.speed = max(self.max_back_speed,self.speed - self.braking) #s
+        elif input[1] == 0:
+            if self.speed > 0:
+                self.speed = max(0,self.speed - self.decceleration)
+            elif self.speed < 0:
+                self.speed = min(0, self.speed + self.decceleration)
+        
+        if self.speed > self.activate_turning_speed:
+            self.angle -= input[0] * self.turning_speed
+        elif self.speed < -self.activate_turning_speed:
+            self.angle += input[0] * self.turning_speed
 
-        self.carx += fwd_dir[0] * input[1]
-        self.cary += fwd_dir[1] * input[1]
+        fwd_dir = self.normalize((math.cos(math.radians(self.angle)), -math.sin(math.radians(self.angle))))
+
+        self.carx += fwd_dir[0] * self.speed
+        self.cary += fwd_dir[1] * self.speed
+
 
         pass
-
-
-
-
-    
-        
