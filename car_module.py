@@ -10,14 +10,13 @@ class car_object:
         self.carx = 150
         self.cary = 150
         self.angle = 0
-        self.wheel_rotation = 0  # hodnota mezi 0 - neco jako 0.7 !ne jedna!
 
-        self.max_speed = 21 # pixels per second to do
-        self.max_back_speed = -7.5
-        self.acceleration = 0.05
-        self.decceleration = 0.038
-        self.braking = 0.15
-        self.activate_turning_speed = 1
+        self.max_speed = 21 / self.fps * 60
+        self.max_back_speed = -7.5 / self.fps * 60
+        self.acceleration = 0.05 / self.fps * 60
+        self.decceleration = 0.038 / self.fps * 60
+        self.braking = 0.15 / self.fps * 60
+        self.activate_turning_speed = 1 / self.fps * 60
         self.turning_speed = 1.5
         
         self.speed = 0

@@ -18,10 +18,10 @@ screen = pygame.display.set_mode(true_res,pygame.FULLSCREEN,vsync=1)
 
 cam = camera((0,0))
 
-car_img = pygame.transform.smoothscale_by(pygame.image.load("images/car.png").convert_alpha(), 0.06)
+car_img = pygame.transform.smoothscale_by(pygame.image.load("images/car.png").convert_alpha(), 0.06*true_res[0] / 2880)
 mycar = car_module.car_object(car_img, fps)
 
-bg = pygame.transform.smoothscale_by(pygame.image.load("images/topdowntrack.png"), 4.5)
+bg = pygame.transform.smoothscale_by(pygame.image.load("images/topdowntrack.png"), 4.5*true_res[0] / 2880)
  
 while True:
     screen.fill((154, 218, 111))
