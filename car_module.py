@@ -12,13 +12,14 @@ class car_object:
         self.angle = 0
         self.wheel_rotation = 0  # hodnota mezi 0 - neco jako 0.7 !ne jedna!
 
-        self.max_speed = 8 # pixels per second to do
-        self.max_back_speed = -3
+        self.max_speed = 21 # pixels per second to do
+        self.max_back_speed = -7.5
         self.acceleration = 0.05
-        self.decceleration = 0.02
-        self.braking = 0.125
-        self.activate_turning_speed = 0.5
-        self.turning_speed = 1
+        self.decceleration = 0.038
+        self.braking = 0.15
+        self.activate_turning_speed = 1
+        self.turning_speed = 1.5
+        
         self.speed = 0
     
     def normalize(self, vector):

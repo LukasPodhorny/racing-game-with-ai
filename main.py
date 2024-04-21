@@ -3,21 +3,25 @@ import car_module
 import pygame
 from pygame.locals import *
 from camera import *
+import ctypes
  
 pygame.init()
  
-fps = 90
+fps = 60
 fpsClock = pygame.time.Clock()
 
 pygame.display.set_caption("racing game")
-screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN, vsync = 1)
+
+ctypes.windll.user32.SetProcessDPIAware()
+true_res = (ctypes.windll.user32.GetSystemMetrics(0),ctypes.windll.user32.GetSystemMetrics(1))
+screen = pygame.display.set_mode(true_res,pygame.FULLSCREEN,vsync=1)
 
 cam = camera((0,0))
 
-car_img = pygame.transform.smoothscale_by(pygame.image.load("images/car.png").convert_alpha(), 0.04)
+car_img = pygame.transform.smoothscale_by(pygame.image.load("images/car.png").convert_alpha(), 0.06)
 mycar = car_module.car_object(car_img, fps)
 
-bg = pygame.image.load("images/topdowntrack.png")
+bg = pygame.transform.smoothscale_by(pygame.image.load("images/topdowntrack.png"), 4.5)
  
 while True:
     screen.fill((154, 218, 111))
