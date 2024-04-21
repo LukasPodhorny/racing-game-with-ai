@@ -41,10 +41,10 @@ class car_object:
         
         return input
 
-    def show(self, screen):
+    def show(self, camera, screen):
         img = pygame.transform.rotozoom(self.img,self.angle,1)
         img_rect = img.get_rect(center = (self.carx, self.cary))
-        screen.blit(img, img_rect)
+        camera.blit(screen, img, img_rect)
         
     
     def update(self):
