@@ -11,12 +11,12 @@ class car_object:
         self.cary = 150
         self.angle = 0
 
-        self.max_speed = 21 / self.fps * 60
-        self.max_back_speed = -7.5 / self.fps * 60
-        self.acceleration = 0.05 / self.fps * 60
-        self.decceleration = 0.038 / self.fps * 60
-        self.braking = 0.15 / self.fps * 60
-        self.activate_turning_speed = 1 / self.fps * 60
+        self.max_speed = 21
+        self.max_back_speed = -7.5
+        self.acceleration = 0.05
+        self.decceleration = 0.038
+        self.braking = 0.15
+        self.activate_turning_speed = 1
         self.turning_speed = 1.5
         
         self.speed = 0
