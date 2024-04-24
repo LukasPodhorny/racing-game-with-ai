@@ -45,6 +45,18 @@ class car_object:
         img = pygame.transform.rotozoom(self.img,self.angle,1)
         img_rect = img.get_rect(center = (self.carx, self.cary))
         camera.blit(screen, img, img_rect)
+    
+    def raycast_hit(mask, start_point, count, spread_angle):
+        # return list of length count
+        #udelat angle natocit se acording to angle auta
+        current_angle = 0
+        step_angle = spread_angle/count
+        
+        for i in range(0, count):
+            current_angle += i*step_angle
+
+
+            
         
     
     def update(self):
