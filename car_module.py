@@ -18,8 +18,9 @@ class car_object:
         self.braking = 0.15
         self.activate_turning_speed = 1
         self.turning_speed = 1.5
-        
+
         self.speed = 0
+
     
     def normalize(self, vector):
         magnitude = math.sqrt(math.pow(vector[0], 2) + math.pow(vector[1], 2))
@@ -55,27 +56,26 @@ class car_object:
         for i in range(0, count):
             current_angle += i*step_angle
 
-
-            
         
-    
     def update(self):
         input = car_object.get_input() # input bud provede ai, nebo clovek
 
         if input[1] < 0:
             self.speed = min(self.max_speed,self.speed + self.acceleration) #w
         elif input[1] > 0:
-            self.speed = max(self.max_back_speed,self.speed - self.braking) #s
+            self.speed = max(self.max_back_speed,self.speed - self.braking)  #s
         elif input[1] == 0:
             if self.speed > 0:
                 self.speed = max(0,self.speed - self.decceleration)
             elif self.speed < 0:
                 self.speed = min(0, self.speed + self.decceleration)
-        
+
         if self.speed > self.activate_turning_speed:
-            self.angle -= input[0] * self.turning_speed
+            self.angle -= input[0] * self.turning_speed # možná udělat nějaký thereshold na drift
+
         elif self.speed < -self.activate_turning_speed:
             self.angle += input[0] * self.turning_speed
+        
 
         fwd_dir = self.normalize((math.cos(math.radians(self.angle)), -math.sin(math.radians(self.angle))))
 
