@@ -1,5 +1,6 @@
 import pygame
 import math
+from settings import *
 
 class car_object:
 
@@ -11,16 +12,7 @@ class car_object:
         self.cary = 150
         self.angle = 0
 
-        self.max_speed = 21
-        self.max_back_speed = -7.5
-        self.acceleration = 0.05
-        self.decceleration = 0.038
-        self.braking = 0.15
-        self.activate_turning_speed = 1
-        self.turning_speed = 1.5
-
         self.speed = 0
-
     
     def normalize(self, vector):
         magnitude = math.sqrt(math.pow(vector[0], 2) + math.pow(vector[1], 2))
@@ -42,14 +34,14 @@ class car_object:
         
         return input
 
+    # plot car on the screen
     def show(self, camera, screen):
         img = pygame.transform.rotozoom(self.img,self.angle,1)
         img_rect = img.get_rect(center = (self.carx, self.cary))
         camera.blit(screen, img, img_rect)
     
-    def raycast_hit(mask, start_point, count, spread_angle):
-        # return list of length count
-        #udelat angle natocit se acording to angle auta
+    # return list of lengths from point at given range
+    def raycast(mask, start_point, count, spread_angle):
         current_angle = 0
         step_angle = spread_angle/count
         
@@ -61,17 +53,17 @@ class car_object:
         input = car_object.get_input() # input bud provede ai, nebo clovek
 
         if input[1] < 0:                                                    #w
-            self.speed = min(self.max_speed,self.speed + self.acceleration)
+            self.speed = min(max_speed,self.speed + acceleration)
         elif input[1] > 0:                                                  #s
-            self.speed = max(self.max_back_speed,self.speed - self.braking)
+            self.speed = max(max_back_speed,self.speed - braking)
         elif input[1] == 0:
             if self.speed > 0:
-                self.speed = max(0,self.speed - self.decceleration)
+                self.speed = max(0,self.speed - decceleration)
             elif self.speed < 0:
-                self.speed = min(0, self.speed + self.decceleration)
+                self.speed = min(0, self.speed + decceleration)
 
-        if abs(self.speed) > self.activate_turning_speed:
-            self.angle -= input[0] * self.turning_speed
+        if abs(self.speed) > activate_turning_speed:
+            self.angle -= input[0] * turning_speed
         
 
         fwd_dir = self.normalize((math.cos(math.radians(self.angle)), -math.sin(math.radians(self.angle))))
