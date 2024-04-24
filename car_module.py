@@ -57,30 +57,24 @@ class car_object:
             current_angle += i*step_angle
 
         
-    def update(self):
+    def update_pos(self):
         input = car_object.get_input() # input bud provede ai, nebo clovek
 
-        if input[1] < 0:
-            self.speed = min(self.max_speed,self.speed + self.acceleration) #w
-        elif input[1] > 0:
-            self.speed = max(self.max_back_speed,self.speed - self.braking)  #s
+        if input[1] < 0:                                                    #w
+            self.speed = min(self.max_speed,self.speed + self.acceleration)
+        elif input[1] > 0:                                                  #s
+            self.speed = max(self.max_back_speed,self.speed - self.braking)
         elif input[1] == 0:
             if self.speed > 0:
                 self.speed = max(0,self.speed - self.decceleration)
             elif self.speed < 0:
                 self.speed = min(0, self.speed + self.decceleration)
 
-        if self.speed > self.activate_turning_speed:
-            self.angle -= input[0] * self.turning_speed # možná udělat nějaký thereshold na drift
-
-        elif self.speed < -self.activate_turning_speed:
-            self.angle += input[0] * self.turning_speed
+        if abs(self.speed) > self.activate_turning_speed:
+            self.angle -= input[0] * self.turning_speed
         
 
         fwd_dir = self.normalize((math.cos(math.radians(self.angle)), -math.sin(math.radians(self.angle))))
 
         self.carx += fwd_dir[0] * self.speed
         self.cary += fwd_dir[1] * self.speed
-
-
-        pass
