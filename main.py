@@ -58,6 +58,7 @@ while True:
 
     # GAME LOGIC END
 
+    # calculating deltaTime
     t = pygame.time.get_ticks()
     deltaTime = (t - getTicksLastFrame) / 1000.0
     getTicksLastFrame = t
