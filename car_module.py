@@ -63,10 +63,10 @@ class car_object:
                 self.speed = min(0, self.speed + decceleration)
 
         if abs(self.speed) > activate_turning_speed:
-            self.angle -= input[0] * turning_speed * deltaTime * 60
+            self.angle -= input[0] * turning_speed * deltaTime
         
 
         fwd_dir = self.normalize((math.cos(math.radians(self.angle)), -math.sin(math.radians(self.angle))))
 
-        self.carx += fwd_dir[0] * self.speed * deltaTime * 60 # temporary
-        self.cary += fwd_dir[1] * self.speed * deltaTime * 60
+        self.carx += fwd_dir[0] * self.speed * deltaTime # temporary
+        self.cary += fwd_dir[1] * self.speed * deltaTime
