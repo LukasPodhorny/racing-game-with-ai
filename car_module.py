@@ -53,7 +53,7 @@ class car_object:
         input = car_object.get_input() # input bud provede ai, nebo clovek
 
         if input[1] < 0:                                                    #w
-            self.speed = min(max_speed,self.speed + acceleration)
+            self.speed = min(max_speed,self.speed + acceleration) 
         elif input[1] > 0:                                                  #s
             self.speed = max(max_back_speed,self.speed - braking)
         elif input[1] == 0:
@@ -67,6 +67,8 @@ class car_object:
         
 
         fwd_dir = self.normalize((math.cos(math.radians(self.angle)), -math.sin(math.radians(self.angle))))
+
+        self.speed *= true_res[0]/2880
 
         self.carx += fwd_dir[0] * self.speed
         self.cary += fwd_dir[1] * self.speed
