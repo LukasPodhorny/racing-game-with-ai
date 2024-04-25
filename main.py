@@ -25,8 +25,8 @@ bg = pygame.transform.smoothscale_by(pygame.image.load("images/track6.png").conv
 
 # temporary
 
-deltaTime = 1
-getTicksLastFrame = 1
+deltaTime = 0
+getTicksLastFrame = 0
  
 debug_font = pygame.font.SysFont("Arial" , 30 , bold = True)
 def render_fps():
@@ -41,6 +41,11 @@ while True:
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
+    
+    # calculating deltaTime
+    t = pygame.time.get_ticks()
+    deltaTime = (t - getTicksLastFrame) / 1000.0
+    getTicksLastFrame = t
     
     # GAME LOGIC START
     
@@ -58,8 +63,4 @@ while True:
 
     # GAME LOGIC END
 
-    # calculating deltaTime
-    t = pygame.time.get_ticks()
-    deltaTime = (t - getTicksLastFrame) / 1000.0
-    getTicksLastFrame = t
     fpsClock.tick()
