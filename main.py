@@ -18,10 +18,10 @@ h_h = screen.get_height()/2
 
 cam = camera((0,0), 1)
 
-car_img = pygame.transform.smoothscale_by(pygame.image.load("images/car.png").convert_alpha(), 0.06*true_res[0] / 2880)
+car_img = pygame.transform.smoothscale_by(pygame.image.load("images/car.png").convert_alpha(), 0.06*res_multiplier)
 mycar = car_module.car_object(car_img, fps)
 
-bg = pygame.transform.smoothscale_by(pygame.image.load("images/track6.png").convert(), 5*true_res[0] / 2880)
+bg = pygame.transform.smoothscale_by(pygame.image.load("images/track6.png").convert(), 5*res_multiplier)
 
 # temporary
 
