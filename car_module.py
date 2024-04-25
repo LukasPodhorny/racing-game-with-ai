@@ -49,7 +49,7 @@ class car_object:
             current_angle += i*step_angle
 
         
-    def update_pos(self):
+    def update_pos(self, deltaTime):
         input = car_object.get_input() # input bud provede ai, nebo clovek
 
         if input[1] < 0:                                                    # w
@@ -63,10 +63,10 @@ class car_object:
                 self.speed = min(0, self.speed + decceleration)
 
         if abs(self.speed) > activate_turning_speed:
-            self.angle -= input[0] * turning_speed
+            self.angle -= input[0] * turning_speed * deltaTime * 60
         
 
         fwd_dir = self.normalize((math.cos(math.radians(self.angle)), -math.sin(math.radians(self.angle))))
 
-        self.carx += fwd_dir[0] * self.speed
-        self.cary += fwd_dir[1] * self.speed
+        self.carx += fwd_dir[0] * self.speed * deltaTime * 60 # temporary
+        self.cary += fwd_dir[1] * self.speed * deltaTime * 60

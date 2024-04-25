@@ -21,7 +21,12 @@ cam = camera((0,0), 1)
 car_img = pygame.transform.smoothscale_by(pygame.image.load("images/car.png").convert_alpha(), 0.06*true_res[0] / 2880)
 mycar = car_module.car_object(car_img, fps)
 
-bg = pygame.transform.smoothscale_by(pygame.image.load("images/track6.png").convert_alpha(), 5*true_res[0] / 2880)
+bg = pygame.transform.smoothscale_by(pygame.image.load("images/track6.png").convert(), 5*true_res[0] / 2880)
+
+# temporary
+
+deltaTime = 1
+getTicksLastFrame = 1
  
 debug_font = pygame.font.SysFont("Arial" , 30 , bold = True)
 def render_fps():
@@ -39,7 +44,7 @@ while True:
     
     # GAME LOGIC START
     
-    mycar.update_pos()
+    mycar.update_pos(deltaTime)
     cam.pos = (mycar.carx - h_w, mycar.cary - h_h)
 
     screen.fill((154, 218, 111))
@@ -53,4 +58,7 @@ while True:
 
     # GAME LOGIC END
 
-    fpsClock.tick(fps)
+    t = pygame.time.get_ticks()
+    deltaTime = (t - getTicksLastFrame) / 1000.0
+    getTicksLastFrame = t
+    fpsClock.tick()
