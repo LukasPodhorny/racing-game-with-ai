@@ -52,9 +52,9 @@ class car_object:
     def update_pos(self):
         input = car_object.get_input() # input bud provede ai, nebo clovek
 
-        if input[1] < 0:                                                    #w
+        if input[1] < 0:                                                    # w
             self.speed = min(max_speed,self.speed + acceleration) 
-        elif input[1] > 0:                                                  #s
+        elif input[1] > 0:                                                  # s
             self.speed = max(max_back_speed,self.speed - braking)
         elif input[1] == 0:
             if self.speed > 0:
@@ -68,7 +68,7 @@ class car_object:
 
         fwd_dir = self.normalize((math.cos(math.radians(self.angle)), -math.sin(math.radians(self.angle))))
 
-        self.speed *= true_res[0]/2880
+        self.speed *= true_res[0]/2880 # nastaveni aby rychlost byla na vsech obrazovkach stejna, ( bylo to nastaveno na 2880 )
 
         self.carx += fwd_dir[0] * self.speed
         self.cary += fwd_dir[1] * self.speed
