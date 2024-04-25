@@ -12,6 +12,7 @@ fpsClock = pygame.time.Clock()
 
 pygame.display.set_caption("racing game")
 
+ctypes.windll.user32.SetProcessDPIAware()
 true_res = (ctypes.windll.user32.GetSystemMetrics(0),ctypes.windll.user32.GetSystemMetrics(1))
 screen = pygame.display.set_mode(true_res,pygame.FULLSCREEN,vsync=1)
 h_w = screen.get_width()/2
