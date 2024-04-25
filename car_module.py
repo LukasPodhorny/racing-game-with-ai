@@ -68,7 +68,5 @@ class car_object:
 
         fwd_dir = self.normalize((math.cos(math.radians(self.angle)), -math.sin(math.radians(self.angle))))
 
-        self.speed *= true_res[0]/2880 # nastaveni aby rychlost byla na vsech obrazovkach stejna, ( bylo to nastaveno na 2880 )
-
         self.carx += fwd_dir[0] * self.speed
         self.cary += fwd_dir[1] * self.speed
