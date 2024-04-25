@@ -68,5 +68,5 @@ class car_object:
 
         fwd_dir = self.normalize((math.cos(math.radians(self.angle)), -math.sin(math.radians(self.angle))))
 
-        self.carx += fwd_dir[0] * self.speed * deltaTime # temporary
+        self.carx += fwd_dir[0] * self.speed * deltaTime
         self.cary += fwd_dir[1] * self.speed * deltaTime
