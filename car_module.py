@@ -53,14 +53,14 @@ class car_object:
         input = car_object.get_input() # input bud provede ai, nebo clovek
 
         if input[1] < 0:                                                    # w
-            self.speed = min(max_speed,self.speed + acceleration) 
+            self.speed = min(max_speed,self.speed + acceleration * deltaTime) 
         elif input[1] > 0:                                                  # s
-            self.speed = max(max_back_speed,self.speed - braking)
+            self.speed = max(max_back_speed,self.speed - braking * deltaTime)
         elif input[1] == 0:
             if self.speed > 0:
-                self.speed = max(0,self.speed - decceleration)
+                self.speed = max(0,self.speed - decceleration * deltaTime)
             elif self.speed < 0:
-                self.speed = min(0, self.speed + decceleration)
+                self.speed = min(0, self.speed + decceleration * deltaTime)
 
         if abs(self.speed) > activate_turning_speed:
             self.angle -= input[0] * turning_speed * deltaTime
