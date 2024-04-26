@@ -21,7 +21,7 @@ cam = camera((0,0), 1)
 car_img = pygame.transform.smoothscale_by(pygame.image.load("images/car.png").convert_alpha(), 0.06*res_multiplier)
 mycar = car_module.car_object(car_img, fps)
 
-bg = pygame.transform.smoothscale_by(pygame.image.load("images/track6.png").convert(), 5*res_multiplier)
+bg = pygame.transform.smoothscale_by(pygame.image.load("images/maintrack.png").convert(), 5*res_multiplier)
 
 getTicksLastFrame = 0
  
