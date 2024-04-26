@@ -19,11 +19,9 @@ h_h = screen.get_height()/2
 cam = camera((0,0), 1)
 
 car_img = pygame.transform.smoothscale_by(pygame.image.load("images/car.png").convert_alpha(), 0.06*res_multiplier)
-car_mask = pygame.mask.from_surface(car_img)
 mycar = car_module.car_object(car_img, fps)
 
-bg = pygame.transform.smoothscale_by(pygame.image.load("images/maintrack.png").convert_alpha(), 10*res_multiplier)
-bg_mask = pygame.mask.from_surface(bg)
+bg = pygame.transform.smoothscale_by(pygame.image.load("images/track6.png").convert(), 5*res_multiplier)
 
 getTicksLastFrame = 0
  
@@ -50,11 +48,6 @@ while True:
     mycar.update_pos(deltaTime)
     cam.pos = (mycar.carx - h_w, mycar.cary - h_h)
 
-    if not bg_mask.overlap(car_mask, (mycar.carx, mycar.cary)):
-        fps_str = "Umřel jsi"
-        fps_tex = debug_font.render(fps_str , 1, pygame.Color("PURPLE"))
-        screen.blit(fps_tex,(0,0))
-
     screen.fill((154, 218, 111))
     cam.blit(screen, bg, (0,0))
     mycar.show(cam, screen)
@@ -62,8 +55,8 @@ while True:
     # fps counter
     render_fps()
     
-    pygame.display.flip()
+    pygame.display.update()
 
-    # GAME LOGIC END;
+    # GAME LOGIC END
     fpsClock.tick()
 
