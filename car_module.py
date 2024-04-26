@@ -8,8 +8,8 @@ class car_object:
         self.img = img
         self.fps = fps
         
-        self.carx = 150
-        self.cary = 150
+        self.carx = 1200
+        self.cary = 1200
         self.angle = 0
 
         self.speed = 0
@@ -36,7 +36,7 @@ class car_object:
 
     # plot car on the screen
     def show(self, camera, screen):
-        img = pygame.transform.rotozoom(self.img,self.angle,1)
+        img = pygame.transform.rotate(self.img,self.angle) # možná rotzoom pokud bude optimalizovany
         img_rect = img.get_rect(center = (self.carx, self.cary))
         camera.blit(screen, img, img_rect)
     
