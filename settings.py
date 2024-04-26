@@ -5,10 +5,10 @@ true_res = (ctypes.windll.user32.GetSystemMetrics(0),ctypes.windll.user32.GetSys
 
 res_multiplier = true_res[0]/2880
 
-max_speed = 1260 * res_multiplier * 60
-max_back_speed = -450 * res_multiplier * 60
-acceleration = 3 * res_multiplier * 60
-decceleration = 2.28 * res_multiplier * 60
-braking = 9 * res_multiplier * 60
-activate_turning_speed = 60 * res_multiplier * 60
-turning_speed = 90   
+max_speed = 75600 * res_multiplier
+max_back_speed = -27000* res_multiplier
+acceleration = 180 * res_multiplier
+decceleration = 136 * res_multiplier
+braking = 540 * res_multiplier
+activate_turning_speed = 60 * res_multiplier
+turning_speed = 90
