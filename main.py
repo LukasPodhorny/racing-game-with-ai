@@ -31,8 +31,6 @@ def render_fps():
     fps_tex = debug_font.render(fps_str , 1, pygame.Color("PURPLE"))
     screen.blit(fps_tex,(0,0))
 
-print(true_res[0])
-
 while True:
 
     # handling exiting game
@@ -47,8 +45,6 @@ while True:
     getTicksLastFrame = t
     
     # GAME LOGIC START
-    
-    print(deltaTime)
     mycar.update_pos(deltaTime)
     cam.pos = (mycar.carx - h_w, mycar.cary - h_h)
 
@@ -59,8 +55,8 @@ while True:
     # fps counter
     render_fps()
     
-    pygame.display.flip()
+    pygame.display.update()
 
-    # GAME LOGIC END
+    # GAME LOGIC END;
     fpsClock.tick()
 
