@@ -23,9 +23,6 @@ mycar = car_module.car_object(car_img, fps)
 
 bg = pygame.transform.smoothscale_by(pygame.image.load("images/track6.png").convert(), 5*res_multiplier)
 
-# temporary
-
-deltaTime = 0
 getTicksLastFrame = 0
  
 debug_font = pygame.font.SysFont("Arial" , 30 , bold = True)
@@ -33,6 +30,8 @@ def render_fps():
     fps_str = "fps: " + str(int(fpsClock.get_fps()))
     fps_tex = debug_font.render(fps_str , 1, pygame.Color("PURPLE"))
     screen.blit(fps_tex,(0,0))
+
+print(true_res[0])
 
 while True:
 
@@ -49,6 +48,7 @@ while True:
     
     # GAME LOGIC START
     
+    print(deltaTime)
     mycar.update_pos(deltaTime)
     cam.pos = (mycar.carx - h_w, mycar.cary - h_h)
 
@@ -62,5 +62,5 @@ while True:
     pygame.display.flip()
 
     # GAME LOGIC END
-
     fpsClock.tick()
+
