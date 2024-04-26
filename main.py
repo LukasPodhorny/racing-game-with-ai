@@ -25,9 +25,6 @@ mycar = car_module.car_object(car_img, fps)
 bg = pygame.transform.smoothscale_by(pygame.image.load("images/maintrack.png").convert_alpha(), 10*res_multiplier)
 bg_mask = pygame.mask.from_surface(bg)
 
-# temporary
-
-deltaTime = 0
 getTicksLastFrame = 0
  
 debug_font = pygame.font.SysFont("Arial" , 30 , bold = True)
@@ -67,7 +64,6 @@ while True:
     
     pygame.display.flip()
 
-    # GAME LOGIC END
-    # je to kvuli akceleraci
-
+    # GAME LOGIC END;
     fpsClock.tick()
+
