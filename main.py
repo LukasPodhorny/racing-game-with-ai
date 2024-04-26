@@ -48,7 +48,7 @@ while True:
     getTicksLastFrame = t
     
     # GAME LOGIC START
-    
+    print(deltaTime)
     mycar.update_pos(deltaTime)
     cam.pos = (mycar.carx - h_w, mycar.cary - h_h)
 
@@ -59,7 +59,7 @@ while True:
     # fps counter
     render_fps()
     
-    pygame.display.flip()
+    pygame.display.update()
 
     # GAME LOGIC END
 
