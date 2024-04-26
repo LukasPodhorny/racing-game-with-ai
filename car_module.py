@@ -8,8 +8,8 @@ class car_object:
         self.img = img
         self.fps = fps
         
-        self.carx = 1200
-        self.cary = 1200
+        self.carx = 1200 * res_multiplier
+        self.cary = 1200 * res_multiplier
         self.angle = 0
 
         self.speed = 0
