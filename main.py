@@ -18,10 +18,12 @@ h_h = screen.get_height()/2
 
 cam = camera((0,0), 1)
 
-car_img = pygame.transform.smoothscale_by(pygame.image.load("images/car.png").convert_alpha(), 0.06*res_multiplier)
+car_img = pygame.transform.smoothscale_by(pygame.image.load("images/car.png").convert_alpha(), 0.06*world_pos)
 mycar = car_module.car_object(car_img, fps)
 
-bg = pygame.transform.smoothscale_by(pygame.image.load("images/maintrack.png").convert(), 5*res_multiplier)
+track = pygame.transform.smoothscale_by(pygame.image.load("images/maintrack5.png").convert_alpha(), 3.5*world_pos)
+track_mask = pygame.mask.from_surface(track)
+# print(track_mask.get_at((500, 720)))
 
 getTicksLastFrame = 0
  
@@ -50,7 +52,7 @@ while True:
     cam.pos = (mycar.carx - h_w, mycar.cary - h_h)
 
     screen.fill((154, 218, 111))
-    cam.blit(screen, bg, (0,0))
+    cam.blit(screen, track, (0,0))
     mycar.show(cam, screen)
 
     # fps counter
