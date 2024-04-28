@@ -1,6 +1,7 @@
 import pygame
 import math
 from settings import *
+from usefulfunctions import *
 
 class car_object:
 
@@ -8,8 +9,8 @@ class car_object:
         self.img = img
         self.fps = fps
         
-        self.carx = 1200 * res_multiplier
-        self.cary = 1200 * res_multiplier
+        self.carx = 1200 * world_pos
+        self.cary = 1200 * world_pos
         self.angle = 0
 
         self.speed = 0
@@ -41,12 +42,16 @@ class car_object:
         camera.blit(screen, img, img_rect)
     
     # return list of lengths from point at given range
-    def raycast(mask, start_point, count, spread_angle):
-        current_angle = 0
-        step_angle = spread_angle/count
-        
-        for i in range(0, count):
-            current_angle += i*step_angle
+    def raycast(origin, max_length, line_count, spread_angle, obstacle_lines):
+        current_angle = -spread_angle/2
+        angle_step = spread_angle/line_count
+
+        for i in range(0,line_count):
+            
+            find_intersection
+            
+            current_angle += angle_step
+            
 
         
     def update_pos(self, deltaTime):
