@@ -41,14 +41,24 @@ class car_object:
         img_rect = img.get_rect(center = (self.carx, self.cary))
         camera.blit(screen, img, img_rect)
     
-    # return list of lengths from point at given range
-    def raycast(origin, max_length, line_count, spread_angle, obstacle_lines):
+    # return list of lengths from point at given rang
+    # obstacle lines musi byt world pos a pozice auta
+    def raycast(origin, car_angle, max_length, line_count, spread_angle, obstacle_lines):
+        lengths = []
+        
         current_angle = -spread_angle/2
         angle_step = spread_angle/line_count
 
         for i in range(0,line_count):
-            
-            find_intersection
+            new_x = origin[0] + math.cos(current_angle + car_angle) * max_length
+            new_y = origin[1] + math.sin(current_angle + car_angle) * max_length
+
+            for obstacle_line in obstacle_lines:
+                intersection = find_intersection(origin[0], origin[1], new_x, new_y, obstacle_line[0][0], obstacle_line[0][1], obstacle_line[1][0], obstacle_line[1][1])
+                if intersection == None:
+                    lengths.append(max_length)
+                else:
+                    lengths.append(distance(origin, intersection))
             
             current_angle += angle_step
             
