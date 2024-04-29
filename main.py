@@ -5,11 +5,10 @@ import pygame
 from pygame.locals import *
 from camera import *
 from settings import *
-import csv
+from usefulfunctions import *
  
 pygame.init()
  
-fps = 60
 fpsClock = pygame.time.Clock()
 
 pygame.display.set_caption("racing game")
@@ -20,10 +19,12 @@ h_h = screen.get_height()/2
 
 cam = camera((0,0), 1)
 
-car_img = pygame.transform.smoothscale_by(pygame.image.load("images/car.png").convert_alpha(), 0.06*world_pos)# deleno 10
-mycar = car_module.car_object(car_img, fps)
+car_img = pygame.transform.smoothscale_by(pygame.image.load("images/car.png").convert_alpha(), 0.06*world_pos)
+mycar = car_module.car_object(car_img)
 
-track = pygame.transform.smoothscale_by(pygame.image.load("images/maintrack5.png").convert_alpha(), 3.5*world_pos)# deleno 10
+current_track = 0
+track_img = make_track(tracks[current_track])
+col_data = "collider_data/col_data_" + current_track + "_" 
 
 getTicksLastFrame = 0
  
@@ -51,13 +52,13 @@ while True:
     # updating
     mycar.update_pos(deltaTime)
     cam.pos = (mycar.carx - h_w, mycar.cary - h_h)
+    poses = mycar.raycast((mycar.carx - cam.pos[0], mycar.cary - cam.pos[1]), 400, 20, 90, None)
 
     # background
     screen.fill((154, 218, 111))
-    cam.blit(screen, track, (0,0))
+    cam.blit(screen, track_img, (0,0))
 
     # ploting
-    poses = mycar.raycast((mycar.carx - cam.pos[0], mycar.cary - cam.pos[1]), 400, 20, 90, None)
     for pos in poses:
         pygame.draw.line(screen, pygame.Color(255,0,0), (mycar.carx - cam.pos[0], mycar.cary - cam.pos[1]), pos, 2)
     mycar.show(cam, screen)

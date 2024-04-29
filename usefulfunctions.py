@@ -1,4 +1,6 @@
 import math
+import pygame
+from settings import *
 
 def find_intersection(x1, y1, x2, y2, x3, y3, x4, y4):
 
@@ -28,3 +30,6 @@ def find_intersection(x1, y1, x2, y2, x3, y3, x4, y4):
 
 def distance(point1, point2):
     return math.sqrt(math.pow(point1[0] - point2[0],2) + math.pow(point1[1] - point2[1],2))
+
+def make_track(parameters):
+    return pygame.transform.smoothscale_by(pygame.image.load(parameters[0]).convert_alpha(), parameters[1]*world_pos)

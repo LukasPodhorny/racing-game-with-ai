@@ -5,9 +5,8 @@ from usefulfunctions import *
 
 class car_object:
 
-    def __init__(self, img, fps):
+    def __init__(self, img):
         self.img = img
-        self.fps = fps
         
         self.carx = 1200 * world_pos # 1200
         self.cary = 1200 * world_pos
@@ -44,7 +43,7 @@ class car_object:
     # return list of lengths from point at given rang
     # obstacle lines musi byt world pos a pozice auta
     # obstacle lines data musi bytpouze vynasbene world pos a potom prevedene kamerou
-    def raycast(self, origin, max_length, line_count, spread_angle, obstacle_lines):
+    def raycast(self, origin, max_length, line_count, spread_angle, col_data):
         lengths = []
         
         current_angle = -spread_angle/2
