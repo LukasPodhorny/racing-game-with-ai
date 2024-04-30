@@ -60,13 +60,13 @@ while True:
         file_counter += 1
         space = False
     if mouse_down:
-        collision_data.append((pygame.mouse.get_pos()[0] * world_pos, pygame.mouse.get_pos()[1]* world_pos, scalar))
+        collision_data.append(((pygame.mouse.get_pos()[0]/scalar), (pygame.mouse.get_pos()[1]/scalar)))
         mouse_down = False
     
     # ploting editing line
     if len(collision_data) > 0:
         for i in range(0, len(collision_data)-1):
-            pygame.draw.line(screen, pygame.Color("RED"),(collision_data[i][0] / world_pos, collision_data[i][1] / world_pos), (collision_data[i+1][0] / world_pos,collision_data[i+1][1] / world_pos))
-        pygame.draw.line(screen, pygame.Color("RED"),(collision_data[len(collision_data)-1][0] / world_pos,collision_data[len(collision_data)-1][1] / world_pos), pygame.mouse.get_pos())
+            pygame.draw.line(screen, pygame.Color("RED"),(collision_data[i][0] * scalar, collision_data[i][1] * scalar), (collision_data[i+1][0] * scalar,collision_data[i+1][1] * scalar))
+        pygame.draw.line(screen, pygame.Color("RED"),(collision_data[len(collision_data)-1][0] * scalar,collision_data[len(collision_data)-1][1] * scalar), pygame.mouse.get_pos())
 
     pygame.display.update()

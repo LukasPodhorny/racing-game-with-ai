@@ -43,11 +43,6 @@ def read_col_data(route):
     with open(route, newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            data.append((float(row['x']) / float(row['scalar']) / world_pos, float(row['y']) / float(row['scalar'])/ world_pos))
+            data.append((float(row['x']), float(row['y'])))
     
     return data
-
-def read_col_scalar(route):
-    with open(route, newline='') as csvfile:
-        reader = csv.DictReader(csvfile)
-        print(reader[0]['scalar'])
