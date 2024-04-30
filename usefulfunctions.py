@@ -2,7 +2,6 @@ import math
 import pygame
 from settings import *
 import csv
-from scipy.interpolate import interp1d
 
 def lerp(a: float, b: float, percentage: float) -> float:
     if 0.0 > percentage > 1.0:
