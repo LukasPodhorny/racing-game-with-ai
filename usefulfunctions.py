@@ -1,35 +1,26 @@
 import math
 import pygame
 from settings import *
+import csv
 
-def find_intersection(x1, y1, x2, y2, x3, y3, x4, y4):
-
-    # Calculate slopes of the lines
-    m1 = (y2 - y1) / (x2 - x1) if x2 != x1 else None
-    m2 = (y4 - y3) / (4 - x3) if x4 != x3 else None
-    
-    # If both lines are vertical (parallel)
-    if m1 is None and m2 is None:
-        return None
-    
-    # If one of the lines is vertical
-    if m1 is None:
-        x = x1
-        y = m2 * (x - x3) + y3
-    elif m2 is None:
-        x = x3
-        y = m1 * (x - x1) + y1
-    else:
-        # If lines are not parallel, find the intersection point
-        if m1 == m2:
-            return None  # Lines are parallel, no intersection
-        x = ((m1 * x1 - m2 * x3) + y3 - y1) / (m1 - m2)
-        y = m1 * (x - x1) + y1
-    
-    return (x, y)
 
 def distance(point1, point2):
     return math.sqrt(math.pow(point1[0] - point2[0],2) + math.pow(point1[1] - point2[1],2))
 
 def make_track(parameters):
     return pygame.transform.smoothscale_by(pygame.image.load(parameters[0]).convert_alpha(), parameters[1]*world_pos)
+
+def read_col_data(route):
+    data = []
+    
+    with open(route, newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            data.append((row['x'], row['y']))
+    
+    return data
+
+def read_col_scalar(route):
+    with open(route, newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        print(reader[0]['scalar'])

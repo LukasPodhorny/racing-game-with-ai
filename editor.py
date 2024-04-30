@@ -26,6 +26,7 @@ track = make_track((tracks[track_index][0],tracks[track_index][1]*scalar))
 file_counter = 0
 collision_data = []
 
+# need to add .csv
 def save_data(identifier, collision_data):
     collision_data.insert(0,('x', 'y','scalar'))
 

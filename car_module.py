@@ -52,15 +52,15 @@ class car_object:
         for _ in range(0,line_count):
             new_x = origin[0] + math.cos(math.radians(current_angle + self.angle)) * max_length
             new_y = origin[1] + -math.sin(math.radians(current_angle + self.angle)) * max_length
-            lengths.append((new_x,new_y))
-            '''
-            for obstacle_line in obstacle_lines:
-                intersection = find_intersection(origin[0], origin[1], new_x, new_y, obstacle_line[0][0], obstacle_line[0][1], obstacle_line[1][0], obstacle_line[1][1])
+            # lengths.append((new_x,new_y))
+            
+            for line_data in col_data:
+                intersection = find_intersection(origin[0], origin[1], new_x, new_y, line_data)
                 if intersection == None:
                     lengths.append(max_length)
                 else:
                     lengths.append(distance(origin, intersection))
-            '''
+            
             current_angle += angle_step
         
         return lengths

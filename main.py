@@ -24,7 +24,13 @@ mycar = car_module.car_object(car_img)
 
 current_track = 0
 track_img = make_track(tracks[current_track])
-col_data = "collider_data/col_data_" + current_track + "_" 
+col_line_count = 2
+col_data = []
+
+for i in range(0, col_line_count):
+    col_data.append(read_col_data("collider_data/col_data_" + str(current_track) + "_" + str(i)))
+
+print(col_data)
 
 getTicksLastFrame = 0
  
@@ -52,7 +58,7 @@ while True:
     # updating
     mycar.update_pos(deltaTime)
     cam.pos = (mycar.carx - h_w, mycar.cary - h_h)
-    poses = mycar.raycast((mycar.carx - cam.pos[0], mycar.cary - cam.pos[1]), 400, 20, 90, None)
+    poses = mycar.raycast((mycar.carx - cam.pos[0], mycar.cary - cam.pos[1]), 400, 20, 90, col_data)
 
     # background
     screen.fill((154, 218, 111))
