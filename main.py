@@ -30,8 +30,6 @@ col_data = []
 for i in range(0, col_line_count):
     col_data.append(read_col_data("collider_data/col_data_" + str(current_track) + "_" + str(i)))
 
-print(col_data)
-
 getTicksLastFrame = 0
  
 debug_font = pygame.font.SysFont("Arial" , (int)(30 * world_pos) , bold = True)
@@ -58,7 +56,7 @@ while True:
     # updating
     mycar.update_pos(deltaTime)
     cam.pos = (mycar.carx - h_w, mycar.cary - h_h)
-    poses = mycar.raycast((mycar.carx - cam.pos[0], mycar.cary - cam.pos[1]), 400, 20, 90, col_data)
+    poses = mycar.raycast((mycar.carx - cam.pos[0], mycar.cary - cam.pos[1]), 400, 20, 90, col_data, cam)
 
     # background
     screen.fill((154, 218, 111))
@@ -67,6 +65,14 @@ while True:
     # ploting
     for pos in poses:
         pygame.draw.line(screen, pygame.Color(255,0,0), (mycar.carx - cam.pos[0], mycar.cary - cam.pos[1]), pos, 2)
+    
+    for i in range(0,len(col_data[0])-1):
+        pygame.draw.line(screen, pygame.Color(255,0,0), (col_data[0][i][0] - cam.pos[0],col_data[0][i][1] - cam.pos[1]), (col_data[0][i+1][0] - cam.pos[0],col_data[0][i+1][1] - cam.pos[1]), 2)
+
+    for i in range(0,len(col_data[1])-1):
+        pygame.draw.line(screen, pygame.Color(255,0,0), (col_data[1][i][0] - cam.pos[0],col_data[1][i][1] - cam.pos[1]), (col_data[1][i+1][0] - cam.pos[0],col_data[1][i+1][1] - cam.pos[1]), 2)
+
+
     mycar.show(cam, screen)
 
     # ploting fps for debug

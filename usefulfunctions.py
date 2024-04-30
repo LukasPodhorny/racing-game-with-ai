@@ -4,10 +4,15 @@ from settings import *
 import csv
 from scipy.interpolate import interp1d
 
+def lerp(a: float, b: float, percentage: float) -> float:
+    if 0.0 > percentage > 1.0:
+        raise ValueError("Percentage value must be between 0.0 and 1.0")
+    return a + (b-a) * percentage 
+
 def calculateOffsets (A, B, C, D):
         
-    top = (D.y - C.y) * (A.x - C.x) - (D.x - C.x) * (A.y - C.y)
-    bottom = (D.x - C.x) * (B.y - A.y) - (D.y - C.y) * (B.x - A.x)
+    top = (D[1] - C[1]) * (A[0] - C[0]) - (D[0] - C[0]) * (A[1] - C[1])
+    bottom = (D[0] - C[0]) * (B[1] - A[1]) - (D[1] - C[1]) * (B[0] - A[0])
     if bottom != 0.0:
         offset = top / bottom
         if (offset >= 0 and offset <= 1):
@@ -20,8 +25,9 @@ def getIntersection(A, B, C, D):
     u = calculateOffsets(C, D, A, B)
     
     if t and u:
-        interp = interp1d(A, B)
-        return interp(t)
+        interp_x = lerp(A[0], B[0], t)
+        interp_y = lerp(A[1], B[1], t)
+        return (interp_x,interp_y)
                     
     return None
 
@@ -37,7 +43,7 @@ def read_col_data(route):
     with open(route, newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            data.append((row['x'], row['y']))
+            data.append((float(row['x']) / float(row['scalar']) / world_pos, float(row['y']) / float(row['scalar'])/ world_pos))
     
     return data
 

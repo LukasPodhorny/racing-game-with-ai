@@ -43,7 +43,7 @@ class car_object:
     # return list of lengths from point at given rang
     # obstacle lines musi byt world pos a pozice auta
     # obstacle lines data musi bytpouze vynasbene world pos a potom prevedene kamerou
-    def raycast(self, origin, max_length, line_count, spread_angle, col_data):
+    def raycast(self, origin, max_length, line_count, spread_angle, col_data, cam):
         lengths = []
         
         current_angle = -spread_angle/2
@@ -53,14 +53,15 @@ class car_object:
             new_x = origin[0] + math.cos(math.radians(current_angle + self.angle)) * max_length
             new_y = origin[1] + -math.sin(math.radians(current_angle + self.angle)) * max_length
             # lengths.append((new_x,new_y))
-            
+            length = (new_x, new_y)
+
             for line_data in col_data:
-                intersection = find_intersection(origin[0], origin[1], new_x, new_y, line_data)
-                if intersection == None:
-                    lengths.append(max_length)
-                else:
-                    lengths.append(distance(origin, intersection))
+                for i in range(0, len(line_data)-1):
+                    intersection = getIntersection((origin[0], origin[1]), (new_x, new_y), (line_data[i][0]-cam.pos[0],line_data[i][1]-cam.pos[1]),(line_data[i+1][0]-cam.pos[0],line_data[i+1][1]-cam.pos[1]))
+                    if intersection != None:
+                        length = intersection
             
+            lengths.append(length)
             current_angle += angle_step
         
         return lengths
