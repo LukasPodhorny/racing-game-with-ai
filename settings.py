@@ -1,4 +1,5 @@
 import ctypes
+from pygame import Color
 
 # UNITS
 ctypes.windll.user32.SetProcessDPIAware()
@@ -17,3 +18,10 @@ turning_speed = 90
 
 # TRACKS
 tracks = [("images/maintrack5.png", 3.5),("images/maintrack4.png", 3.5)]
+
+# DEBUG MODE
+debug = True
+
+text_color = Color("Purple")
+raycast_color = Color("Red")
+collider_color = Color("Red")

@@ -6,6 +6,10 @@ import csv
 def lerp(a: float, b: float, percentage: float) -> float:
     return a + (b-a) * percentage 
 
+def normalize(vector):
+        magnitude = math.sqrt(math.pow(vector[0], 2) + math.pow(vector[1], 2))
+        return (vector[0]/magnitude, vector[1]/magnitude)
+
 def calculateOffsets (A, B, C, D):   
     
     top = (D[1] - C[1]) * (A[0] - C[0]) - (D[0] - C[0]) * (A[1] - C[1])

@@ -62,7 +62,15 @@ while True:
     # drawing editing line
     if len(collision_data) > 0:
         for i in range(0, len(collision_data)-1):
-            pygame.draw.line(screen, pygame.Color("RED"),(collision_data[i][0] * scalar, collision_data[i][1] * scalar), (collision_data[i+1][0] * scalar,collision_data[i+1][1] * scalar))
-        pygame.draw.line(screen, pygame.Color("RED"),(collision_data[len(collision_data)-1][0] * scalar,collision_data[len(collision_data)-1][1] * scalar), pygame.mouse.get_pos())
+            
+            a = (collision_data[i  ][0] * scalar, collision_data[i  ][1] * scalar)
+            b = (collision_data[i+1][0] * scalar, collision_data[i+1][1] * scalar)
+
+            pygame.draw.line(screen, pygame.Color("RED"),a, b)
+
+        a = (collision_data[len(collision_data)-1][0] * scalar, collision_data[len(collision_data)-1][1] * scalar)
+        b = pygame.mouse.get_pos()   
+
+        pygame.draw.line(screen, pygame.Color("RED"), a, b)
 
     pygame.display.update()
