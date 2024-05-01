@@ -58,7 +58,7 @@ while True:
     # updating
     mycar.update_pos(deltaTime)
     cam.pos = (mycar.carx - h_w, mycar.cary - h_h)
-    lengths, intersections = mycar.raycast((mycar.carx - cam.pos[0], mycar.cary - cam.pos[1]), 3000, 40, 90, col_data, cam, True)
+    lengths, intersections = mycar.raycast((mycar.carx - cam.pos[0], mycar.cary - cam.pos[1]), 1500, 20, 90, col_data, cam, True)
 
     # drawing background first
     screen.fill(bg_color)
