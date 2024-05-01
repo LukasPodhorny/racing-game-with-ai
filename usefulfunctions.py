@@ -40,6 +40,6 @@ def read_col_data(route):
     with open(route, newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            data.append((float(row['x']), float(row['y'])))
+            data.append((float(row['x'])*world_pos, float(row['y'])*world_pos))
     
     return data
