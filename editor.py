@@ -63,12 +63,12 @@ while True:
     if len(collision_data) > 0:
         for i in range(0, len(collision_data)-1):
             
-            a = (collision_data[i  ][0] * scalar, collision_data[i  ][1] * scalar)
-            b = (collision_data[i+1][0] * scalar, collision_data[i+1][1] * scalar)
+            a = (collision_data[i  ][0] * scalar * world_pos, collision_data[i  ][1] * scalar * world_pos)
+            b = (collision_data[i+1][0] * scalar * world_pos, collision_data[i+1][1] * scalar * world_pos)
 
             pygame.draw.line(screen, pygame.Color("RED"),a, b)
 
-        a = (collision_data[len(collision_data)-1][0] * scalar, collision_data[len(collision_data)-1][1] * scalar)
+        a = (collision_data[len(collision_data)-1][0] * scalar * world_pos, collision_data[len(collision_data)-1][1] * scalar * world_pos)
         b = pygame.mouse.get_pos()   
 
         pygame.draw.line(screen, pygame.Color("RED"), a, b)
