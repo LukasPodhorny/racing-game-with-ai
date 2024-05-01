@@ -4,12 +4,10 @@ from settings import *
 import csv
 
 def lerp(a: float, b: float, percentage: float) -> float:
-    if 0.0 > percentage > 1.0:
-        raise ValueError("Percentage value must be between 0.0 and 1.0")
     return a + (b-a) * percentage 
 
-def calculateOffsets (A, B, C, D):
-        
+def calculateOffsets (A, B, C, D):   
+    
     top = (D[1] - C[1]) * (A[0] - C[0]) - (D[0] - C[0]) * (A[1] - C[1])
     bottom = (D[0] - C[0]) * (B[1] - A[1]) - (D[1] - C[1]) * (B[0] - A[0])
     if bottom != 0.0:
