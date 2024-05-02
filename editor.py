@@ -18,20 +18,24 @@ h_h = screen.get_height()/2
 cam = camera((0,0), 1)
 
 track_index = 0
-scalar = 0.2
-track = make_track((tracks[track_index][0],tracks[track_index][1]*scalar))
+scalar = 5
+obj = pygame.transform.smoothscale_by(pygame.image.load("images/car.png").convert_alpha(), car_scale * scalar * world_pos)
+obj_name = "car"
+centered = True
+offset = (200,200)
+#obj = pygame.transform.smoothscale_by(pygame.image.load(tracks[track_index][0]).convert_alpha(), tracks[track_index][1]* scalar * world_pos)
+#obj_name = "track"
 file_counter = 0
 collision_data = []
 
 def save_data(identifier, collision_data):
     collision_data.insert(0,('x', 'y'))
 
-    with open("collider_data/col_data_" + identifier, mode='w', newline='') as file:
+    with open("collider_data/" + obj_name + "_col_data_" + identifier, mode='w', newline='') as file:
         writer = csv.writer(file)
         writer.writerows(collision_data)
 
 while True:
-    
     mouse_down = False
     space = False
 
@@ -48,7 +52,12 @@ while True:
                 space = True
     
     screen.fill((154, 218, 111))
-    cam.blit(screen, track, (0,0))
+    
+    img_pos = (0,0)
+    if centered:
+        img_pos = obj.get_rect(center = (0, 0))
+    
+    cam.blit(screen, obj, add_points(img_pos, offset))
 
     if space:
         save_data(str(track_index) + '_' + str(file_counter), collision_data)
@@ -56,21 +65,23 @@ while True:
         file_counter += 1
         space = False
     if mouse_down:
-        collision_data.append(((pygame.mouse.get_pos()[0]/scalar/world_pos), (pygame.mouse.get_pos()[1]/scalar/world_pos)))
+        collision_data.append((((pygame.mouse.get_pos()[0] - offset[0])/scalar/world_pos), ((pygame.mouse.get_pos()[1] - offset[1])/scalar/world_pos)))
         mouse_down = False
     
     # drawing editing line
     if len(collision_data) > 0:
         for i in range(0, len(collision_data)-1):
             
-            a = (collision_data[i  ][0] * scalar * world_pos, collision_data[i  ][1] * scalar * world_pos)
-            b = (collision_data[i+1][0] * scalar * world_pos, collision_data[i+1][1] * scalar * world_pos)
+            a = add_points(multi_point(collision_data[i  ], scalar * world_pos), offset)
+            b = add_points(multi_point(collision_data[i+1], scalar * world_pos), offset)
 
             pygame.draw.line(screen, pygame.Color("RED"),a, b)
 
-        a = (collision_data[len(collision_data)-1][0] * scalar * world_pos, collision_data[len(collision_data)-1][1] * scalar * world_pos)
+        a = add_points(multi_point(collision_data[len(collision_data)-1], scalar * world_pos), offset)
         b = pygame.mouse.get_pos()   
 
         pygame.draw.line(screen, pygame.Color("RED"), a, b)
+    
+    pygame.draw.circle(screen, pygame.Color("Green"), offset, 5)
 
     pygame.display.update()

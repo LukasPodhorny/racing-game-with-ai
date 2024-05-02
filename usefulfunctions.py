@@ -32,6 +32,12 @@ def getIntersection(A, B, C, D):
                     
     return None
 
+def isIntersection(A, B, C, D):
+    t = calculateOffsets(A, B, C, D)
+    u = calculateOffsets(C, D, A, B)
+    
+    return t and u
+
 def distance(point1, point2):
     return math.sqrt(math.pow(point1[0] - point2[0],2) + math.pow(point1[1] - point2[1],2))
 
@@ -47,3 +53,13 @@ def read_col_data(route):
             data.append((float(row['x'])*world_pos, float(row['y'])*world_pos))
     
     return data
+
+def multi_point(point, scalar, divide = False):
+    if divide:
+        return (point[0] / scalar, point[1] / scalar)
+    return (point[0] * scalar, point[1] * scalar)
+
+def add_points(point1, point2, substract = False):
+    if substract:
+        return (point1[0] - point2[0], point1[1] - point2[1])
+    return (point1[0] + point2[0], point1[1] + point2[1])
