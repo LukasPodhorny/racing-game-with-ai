@@ -87,7 +87,7 @@ class car_object:
         return length, None
 
     def check_collisions(self, origin, col_data, cam):
-        car_col_data = read_col_data("collider_data/car_col_data_0_0")
+        car_col_data = read_col_data("collider_data/car_col_data_0_0") 
 
         for i in range(0, len(car_col_data)-1): 
             c = add_points(origin,car_col_data[i])

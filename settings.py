@@ -21,7 +21,7 @@ car_scale = 0.06
 tracks = [("images/maintrack5.png", 3.5),("images/maintrack4.png", 3.5)]
 
 # DEBUG MODE
-debug = False
+debug = True
 
 text_color = Color("Purple")
 raycast_color = Color("Red")
