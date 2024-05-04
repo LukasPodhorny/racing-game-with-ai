@@ -48,22 +48,27 @@ while True:
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
+
     # calculating deltaTime
     t = pygame.time.get_ticks()
     deltaTime = (t - getTicksLastFrame) / 1000.0
     getTicksLastFrame = t
     
     # GAME LOGIC START
-    
     # updating
     player_car.update_pos(deltaTime)
     cam.pos = (player_car.x - h_w, player_car.y - h_h)
     raycast_origin = cam.r_pos((player_car.x, player_car.y))
-    lengths, intersections = player_car.raycast(raycast_origin, 1500, 25, 120, col_data, cam, debug_mode = False)
+    lengths, intersections = player_car.raycast(raycast_origin, 1500, 25, 120, col_data, cam, debug_mode = True)
     game_over = player_car.check_collisions(raycast_origin, col_data, cam)
+    win = player_car.check_win(raycast_origin, cam)
 
-    if game_over:
-        player_car.reset((1900 * world_pos, 1900 * world_pos))
+    #if game_over:
+    #    player_car.reset((1900 * world_pos, 1900 * world_pos))
+    #if win:
+    #    pygame.quit()
+    #    sys.exit()
+    
 
     # drawing background first
     screen.fill(bg_color)
@@ -78,13 +83,14 @@ while True:
 
         # drawing track collider boundaries
         for i in range(0,len(col_data[0])-1):
-            pygame.draw.line(screen, pygame.Color(255,0,0), cam.r_pos(col_data[0][i]), cam.r_pos(col_data[0][i+1]), 2)
+            pygame.draw.line(screen, pygame.Color("Red"), cam.r_pos(col_data[0][i]), cam.r_pos(col_data[0][i+1]), 2)
         for i in range(0,len(col_data[1])-1):
-            pygame.draw.line(screen, pygame.Color(255,0,0), cam.r_pos(col_data[1][i]), cam.r_pos(col_data[1][i+1]), 2)
+            pygame.draw.line(screen, pygame.Color("Red"), cam.r_pos(col_data[1][i]), cam.r_pos(col_data[1][i+1]), 2)
 
         for i in range(0,len(car_col_data)-1):
-            pygame.draw.line(screen, pygame.Color(255,0,0), add_points(raycast_origin, car_col_data[i]), add_points(raycast_origin, car_col_data[i + 1]), 2)
+            pygame.draw.line(screen, pygame.Color("Red"), add_points(raycast_origin, car_col_data[i]), add_points(raycast_origin, car_col_data[i + 1]), 2)
         pygame.draw.circle(screen, pygame.Color("White"), raycast_origin, 5)
+        
         # drawing raycast
         if intersections:
             i = 0  
