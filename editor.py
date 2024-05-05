@@ -25,13 +25,14 @@ centered = True
 offset = (200,200)
 #obj = pygame.transform.smoothscale_by(pygame.image.load(tracks[track_index][0]).convert_alpha(), tracks[track_index][1]* scalar * world_pos)
 #obj_name = "track"
+data = "col"
 file_counter = 0
 collision_data = []
 
 def save_data(identifier, collision_data):
     collision_data.insert(0,('x', 'y'))
 
-    with open("collider_data/" + obj_name + "_col_data_" + identifier, mode='w', newline='') as file:
+    with open("collider_data/" + obj_name + "_"+data+"_data_" + identifier, mode='w', newline='') as file:
         writer = csv.writer(file)
         writer.writerows(collision_data)
 

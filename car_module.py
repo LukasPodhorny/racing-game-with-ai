@@ -5,11 +5,11 @@ from usefulfunctions import *
 
 class car_object:
 
-    def __init__(self, img):
+    def __init__(self, img, win_function = None):
         self.img = img
 
-        self.x = 1900 * world_pos
-        self.y = 1900 * world_pos
+        self.x = 3800 * world_pos
+        self.y = 2500 * world_pos
         self.pos = (self.x, self.y)
         self.angle = 0
 
@@ -39,7 +39,7 @@ class car_object:
     # draw car on the screen
     def show(self, camera, screen):
         # add rotzoom for better quality, but worse performance
-        img = pygame.transform.rotate(self.img,self.angle)
+        img = pygame.transform.rotozoom(self.img,self.angle, 1)
         img_rect = img.get_rect(center = (self.x, self.y))
         camera.blit(screen, img, img_rect)
 
@@ -63,18 +63,16 @@ class car_object:
                 for i in range(0, len(line_data)-1):
                     a = cam.r_pos(line_data[i  ])
                     b = cam.r_pos(line_data[i+1])
-
+    
                     intersection = getIntersection(new_origin, (new_x, new_y), a, b)
-                    
-                    if intersection != None:
+                    if intersection:
                         if debug_mode:
-                            new_length = distance(new_origin,intersection)
-
+                            new_length = math.dist(new_origin,intersection)
                             if length > new_length:
                                 end_point = intersection
                                 length = new_length
                         else:
-                            length = min(length,distance(new_origin,intersection))
+                            length = min(length,math.dist(new_origin,intersection))
             
             lengths.append(length)
             end_points.append(end_point)
@@ -86,21 +84,36 @@ class car_object:
         
         return length, None
 
-    def check_collisions(self, origin, col_data, cam):
-        car_col_data = read_col_data("collider_data/car_col_data_0_0") 
+    def check_collisions(self, origin, col_data, cam, view_dist = 300):
+        car_col_data = read_col_data("collider_data/car_col_data_0_0")
 
-        for i in range(0, len(car_col_data)-1): 
-            c = add_points(origin,car_col_data[i])
-            d = add_points(origin,car_col_data[i+1])
+        # each line will be separated for optimalization purpose
+        for i in range(0, (int)(len(car_col_data)/2)): 
+            c = add_points(origin,car_col_data[2*i])
+            d = add_points(origin,car_col_data[2*i+1])
 
             for line_data in col_data:
                 
                 for j in range(0, len(line_data)-1):
+                    
                     a = cam.r_pos(line_data[j  ])
                     b = cam.r_pos(line_data[j+1])
 
                     if isIntersection(a, b, c, d):
                         return True               
+        return False
+    
+    def check_win(self, origin, cam):
+        car_col_data = read_col_data("collider_data/car_col_data_0_0")
+        line_data = read_col_data("collider_data/track_win_data_0_0")
+
+        for i in range(0, (int)(len(car_col_data)/2)): 
+            c = add_points(origin,car_col_data[2*i])
+            d = add_points(origin,car_col_data[2*i+1])
+            a = cam.r_pos(line_data[0])
+            b = cam.r_pos(line_data[1])
+
+            return isIntersection(a, b, c, d)                     
         return False
 
         
@@ -123,6 +136,5 @@ class car_object:
         
 
         fwd_dir = normalize((math.cos(math.radians(self.angle)), -math.sin(math.radians(self.angle))))
-
         self.x += fwd_dir[0] * self.speed * deltaTime
         self.y += fwd_dir[1] * self.speed * deltaTime
