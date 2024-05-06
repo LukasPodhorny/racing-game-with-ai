@@ -71,6 +71,7 @@ class RacingEnv(Env):
     
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
     def __init__(self, render_mode=None, size=5):
+        
         assert render_mode is None or render_mode in self.metadata["render_modes"]
         self.render_mode = render_mode
         
@@ -84,7 +85,6 @@ class RacingEnv(Env):
 
         self.cam = camera((0,0), 1)
 
-        
         current_track = random.randint(0,len(tracks)-2)
         self.track_img = make_track(tracks[current_track])
         self.col_line_count = 2
@@ -101,7 +101,6 @@ class RacingEnv(Env):
         self.max_ray_count = 25
         self.spread_angle = 120
 
-        
         self.getTicksLastFrame = 1000
         
         # Can press one of four keys: w, a, s, d 
@@ -247,16 +246,22 @@ def train():
     log_path = os.path.join('Training', 'Logs')
     
     model = PPO("MlpPolicy", env, verbose=1, tensorboard_log=log_path)
-    model.learn(total_timesteps=10000)
+    model.learn(total_timesteps=500000)
     
-    model_path = os.path.join('Training', 'Saved Models', '400000_PPO_Self_Driving')
+    model_path = os.path.join('Training', 'Saved Models', '500000_PPO_Self_Driving')
     model.save(model_path)
 
 
+test()
+
+'''
 log_path = os.path.join('Training', 'Logs')
-model_path = os.path.join('training_data', '400000_self_driving')
+model_path = os.path.join('Training', 'Saved Models', '500000_PPO_Self_Driving')
 model = PPO("MlpPolicy", env, verbose=1, tensorboard_log=log_path)
-model.load(model_path)
+new_model = model.load(model_path)
+
+evaluate_policy(new_model, env, n_eval_episodes=1, render=True)
+
 
 episodes = 5
 
@@ -278,3 +283,4 @@ for episode in range(0,episodes):
     print('Episode:{} Score:{}'.format(episode+1, score))
 env.close()
 
+'''
