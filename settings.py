@@ -9,10 +9,10 @@ world_pos = true_res[0]/2880
 
 # CAR
 max_speed = 2000 * world_pos
-max_back_speed = -400 * world_pos
+max_back_speed = 0 * world_pos # -400 ZMENENOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 acceleration = 400 * world_pos
 decceleration = 180 * world_pos
-braking = 500 * world_pos
+braking = 500 * world_pos # UDELAT MENSI POKUD SE TO BUDE SPATNE TRENOVATTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
 activate_turning_speed = 20 * world_pos
 turning_speed = 90
 car_scale = 0.06

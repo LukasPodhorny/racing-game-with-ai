@@ -15,63 +15,12 @@ from camera import *
 from settings import *
 from usefulfunctions import *
 
-# pygame.init()
-# pygame.display.set_caption("racing game training enviroment")
-
-# screen = pygame.display.set_mode(true_res,pygame.FULLSCREEN,vsync=1)
-# h_w = screen.get_width()/2
-# h_h = screen.get_height()/2
-# bg_color = (154, 218, 111)
-
-# cam = camera((0,0), 1)
-# car_img = pygame.transform.smoothscale_by(pygame.image.load("images/car.png").convert_alpha(), car_scale*world_pos)
-
-# train_car = car_module.car_object(car_img)
-
-# setting up current track and colliders for the track
-# current_track = random.randint(0,len(tracks))
-# track_img = make_track(tracks[current_track])
-# col_line_count = 
-# col_data = []
-# for i in range(0, col_line_count):
-#     col_data.append(read_col_data("collider_data/track_col_data_" + str(current_track) + "_" + str(i)))
-
-# getTicksLastFrame = 0
- 
-# fps rendering for debugging
-# debug_font = pygame.font.SysFont("Arial" , (int)(30 * world_pos) , bold = True)
-# def render_fps():
-#     fps_str = "fps: " + str(int(fpsClock.get_fps()))
-#     fps_tex = debug_font.render(fps_str , 1, text_color)
-#     screen.blit(fps_tex,(0,0))
-    
-
-# calculating deltaTime
-# t = pygame.time.get_ticks()
-# deltaTime = (t - getTicksLastFrame) / 1000.0
-# getTicksLastFrame = t
-
-# GAME LOGIC START
-
-# updating
-# player_car.update_pos(deltaTime)
-# cam.pos = (player_car.x - h_w, player_car.y - h_h)
-# raycast_origin = cam.r_pos((player_car.x, player_car.y))
-# lengths, intersections = player_car.raycast(raycast_origin, 1500, 25, 120, col_data, cam, debug_mode = True)
-# game_over = player_car.check_collisions(raycast_origin, col_data, cam)
-# win = player_car.check_win(raycast_origin, cam)
-
-#if game_over:
-#    player_car.reset((1900 * world_pos, 1900 * world_pos))
-#if win:
-#    pygame.quit()
-#    sys.exit()
-
 class RacingEnv(Env):
     
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
     def __init__(self, render_mode=None, size=5):
         
+        # Initiali
         assert render_mode is None or render_mode in self.metadata["render_modes"]
         self.render_mode = render_mode
         
@@ -104,7 +53,8 @@ class RacingEnv(Env):
         self.getTicksLastFrame = 1000
         
         # Can press one of four keys: w, a, s, d 
-        self.action_space = Box(0, 1, shape = (2,2), dtype = np.int32) # * fix after installing libraries to int
+        #self.action_space = Box(0, 1, shape = (2,2), dtype = np.int32)
+        self.action_space = MultiDiscrete([3,3])
        
         # Raycast length array space
         self.observation_space = Box(low = 0, high = self.max_ray_length, shape = (self.max_ray_count,), dtype=np.float32)
@@ -114,17 +64,21 @@ class RacingEnv(Env):
         self.lengths, self.intersections = self.train_car.raycast(self.raycast_origin,self.max_ray_length, self.max_ray_count, self.spread_angle, self.col_data, self.cam, debug_mode=True)
         self.state = self.lengths
 
+        self.last_rewardgate = 0
+
         # Set episode length to 60 seconds
         self.episode_length = 60 
         
     def step(self, action):
+        
+        # calculating deltatime
         t = pygame.time.get_ticks()
         deltaTime = (t - self.getTicksLastFrame) / 1000.0
 
         self.getTicksLastFrame = t
 
 
-        # updating alert you need to add action as argument to update the car
+        # updating the game
         self.train_car.update_pos(deltaTime, True, action)
         self.cam.pos = (self.train_car.x - self.h_w, self.train_car.y - self.h_h)
         self.raycast_origin = self.cam.r_pos((self.train_car.x, self.train_car.y))
@@ -137,33 +91,34 @@ class RacingEnv(Env):
         # Reduce shower length by 1 second
         self.episode_length -= 1 * deltaTime 
         
-        # Calculate reward
-        reward = -3 * deltaTime
+        # Calculating rewards
+        reward = -20 * deltaTime
 
         gate_check = self.train_car.check_reward_gates(self.raycast_origin,self.cam,self.rewardgates_data)
         if gate_check != None:
             self.rewardgates_data.pop(gate_check[0])
             self.rewardgates_data.pop(gate_check[1])
 
-            reward += 50
+            sec_between = (t - self.last_rewardgate)/1000
+            reward += 500 / sec_between * 1.5
+            self.last_rewardgate = 0
         
         if self.game_over:
-            reward -= 200
+            reward -= 450
         
         if self.win:
-            reward += 700
+            reward += 1000
         
-        # Check if shower is done
+        
+        # Check if the episode is done
         if self.episode_length <= 0 or self.game_over or self.win: 
             done = True
         else:
             done = False
         
-        # Set placeholder for info
-        info = {}
         
         # Return step information
-        return self.state, reward, done, False, info
+        return self.state, reward, done, False, {}
 
     def render(self):
         
@@ -171,17 +126,20 @@ class RacingEnv(Env):
         self.screen.fill(self.bg_color)
         self.cam.blit(self.screen, self.track_img, (0,0))
         
-        # drawing
+        # drawing objects
         self.train_car.show(self.cam, self.screen)
         
-        # rendering gizmos for debugging
+        # drawing gizmos for debugging
         if debug:
             car_col_data = read_col_data("collider_data/car_col_data_0_0")
+            
             # drawing track collider boundaries
             for i in range(0,len(self.col_data[0])-1):
                 pygame.draw.line(self.screen, pygame.Color("Red"), self.cam.r_pos(self.col_data[0][i]), self.cam.r_pos(self.col_data[0][i+1]), 2)
             for i in range(0,len(self.col_data[1])-1):
                 pygame.draw.line(self.screen, pygame.Color("Red"), self.cam.r_pos(self.col_data[1][i]), self.cam.r_pos(self.col_data[1][i+1]), 2)
+            
+            # drawing car collider
             for i in range(0,(int)(len(car_col_data)/2)):
                 pygame.draw.line(self.screen, pygame.Color("Green"), add_points(self.raycast_origin, car_col_data[2*i]), add_points(self.raycast_origin, car_col_data[2*i+1]), 2)
             pygame.draw.circle(self.screen, pygame.Color("White"), self.raycast_origin, 3)
@@ -197,7 +155,8 @@ class RacingEnv(Env):
 
         pygame.display.update()
     
-    def reset(self, seed = None, options = None):
+    # Restarting the enviroment
+    def reset(self, seed = random.randint(0,10000), options = None):
         super().reset(seed=seed)
         
         current_track = random.randint(0,len(tracks)-2)
@@ -218,12 +177,12 @@ class RacingEnv(Env):
 
 env = RacingEnv(render_mode = "human")
 
-def test():
+def test_env():
     
     episodes = 5
 
     for episode in range(0,episodes):
-        state, info = env.reset(episode)
+        state, info = env.reset()
         done = False
         score = 0
         while not done:
@@ -240,19 +199,16 @@ def test():
 
     env.close()
 
-def train():
+def train(timesteps, name, policy = "MlpPolicy"):
     log_path = os.path.join('Training', 'Logs')
-    
-    model = PPO("MlpPolicy", env, verbose=1, tensorboard_log=log_path,learning_rate= 0.001)
-    model.learn(total_timesteps=10000)
-    
-    model_path = os.path.join('Training', 'Saved Models', '10000_PPO_Self_Driving')
+    model = PPO(policy, env, verbose=1, tensorboard_log=log_path, learning_rate= 0.00003)
+    model.learn(timesteps)
+    model_path = os.path.join('Training', 'Saved Models', name)
     model.save(model_path)
 
-def test_model(modelname):
-    model_path = os.path.join('Training', 'Saved Models', modelname)
-    model = PPO("MlpPolicy", env, verbose=1)
-    new_model = model.load(model_path)
+def test_model(name):
+    path = os.path.join('Training', 'Saved Models', name)
+    model = PPO.load(path)
 
     episodes = 5
 
@@ -260,6 +216,7 @@ def test_model(modelname):
         obs, info = env.reset()
         done = False
         score = 0
+
         while not done:
             for event in pygame.event.get():
                 if event.type == QUIT:
@@ -267,7 +224,6 @@ def test_model(modelname):
                     sys.exit()
             env.render()
 
-            
             action, _states = model.predict(obs)
             obs, reward, done, trancustated, info = env.step(action)
             score += reward
@@ -276,6 +232,7 @@ def test_model(modelname):
 
     env.close()
 
-test()
+#train(20000,"20000selfdrivingtest")
+test_model("20000selfdrivingtest")
 
 

@@ -31,17 +31,31 @@ class car_object:
         
         return input
     
+    # def convert_ai_input(ai_input):
+    #     input = [0,0]
+        
+    #     if ai_input[0][0] == 1:
+    #         input[0] += -1
+    #     if ai_input[0][1] == 1:
+    #         input[0] += 1
+    #     if ai_input[1][0] == 1:
+    #         input[1] += 1
+    #     if ai_input[1][1] == 1:
+    #         input[1] += -1
+        
+    #     return input
     def convert_ai_input(ai_input):
         input = [0,0]
         
-        if ai_input[0][0] == 1:
-            input[0] += -1
-        if ai_input[0][1] == 1:
-            input[0] += 1
-        if ai_input[1][0] == 1:
-            input[1] += 1
-        if ai_input[1][1] == 1:
-            input[1] += -1
+        if ai_input[0] == 1:
+            input[0] = -1
+        if ai_input[0] == 2:
+            input[0] = 1
+        
+        if ai_input[1] == 1:
+            input[1] = 1
+        if ai_input[1] == 2:
+            input[1] = -1
         
         return input
 
@@ -148,7 +162,7 @@ class car_object:
 
         
     def update_pos(self, deltaTime, ai = False, ai_input = None):
-        # input bud provede ai, nebo clovek
+        # input will provide either person or ai
         if ai:
             input = car_object.convert_ai_input(ai_input)
         else:
