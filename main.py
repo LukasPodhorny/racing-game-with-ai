@@ -20,13 +20,14 @@ bg_color = (154, 218, 111)
 
 cam = camera((0,0), 1)
 
-car_img = pygame.transform.smoothscale_by(pygame.image.load("images/car.png").convert_alpha(), car_scale*world_pos)
-player_car = car_module.car_object(car_img)
-
 # setting up current track and colliders for the track
 current_track = 0
 track_img = make_track(tracks[current_track])
 col_line_count = 2
+
+car_img = pygame.transform.smoothscale_by(pygame.image.load("images/car.png").convert_alpha(), car_scale*world_pos)
+player_car = car_module.car_object(car_img, tracks[current_track][2])
+
 
 col_data = []
 for i in range(0, col_line_count):
@@ -63,11 +64,11 @@ while True:
     game_over = player_car.check_collisions(raycast_origin, col_data, cam)
     win = player_car.check_win(raycast_origin, cam)
 
-    #if game_over:
-    #    player_car.reset((1900 * world_pos, 1900 * world_pos))
-    #if win:
-    #    pygame.quit()
-    #    sys.exit()
+    if game_over:
+        player_car.reset(tracks[current_track][2])
+    if win:
+        pygame.quit()
+        sys.exit()
     
 
     # drawing background first

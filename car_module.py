@@ -5,11 +5,11 @@ from usefulfunctions import *
 
 class car_object:
 
-    def __init__(self, img, win_function = None):
+    def __init__(self, img, start_pos, win_function = None):
         self.img = img
 
-        self.x = 3800 * world_pos
-        self.y = 2500 * world_pos
+        self.x = start_pos[0] * world_pos #3900 * world_pos
+        self.y = start_pos[1] * world_pos #2700 * world_pos
         self.pos = (self.x, self.y)
         self.angle = 0
 
@@ -30,6 +30,22 @@ class car_object:
             input[1] = -1
         
         return input
+    
+    def convert_ai_input(ai_input):
+        input = [0,0]
+        
+        if ai_input[0][0] == 1:
+            input[0] = -1
+        if ai_input[0][1] == 1:
+            input[0] = 1
+        
+        if ai_input[1][0] == 1:
+            input[1] = 1
+        if ai_input[1][1] == 1:
+            input[1] = -1
+        
+        return input
+
     
     def reset(self, start_pos):
         self.speed = 0
@@ -84,7 +100,7 @@ class car_object:
         
         return length, None
 
-    def check_collisions(self, origin, col_data, cam, view_dist = 300):
+    def check_collisions(self, origin, col_data, cam):
         car_col_data = read_col_data("collider_data/car_col_data_0_0")
 
         # each line will be separated for optimalization purpose
@@ -103,6 +119,21 @@ class car_object:
                         return True               
         return False
     
+    def check_reward_gates(self, origin, cam, rewardgates_data):
+        car_col_data = read_col_data("collider_data/car_col_data_0_0")
+        line_data = rewardgates_data
+
+        for j in range(0,(int)(len(line_data)/2)):
+            for i in range(0, (int)(len(car_col_data)/2)): 
+                c = add_points(origin,car_col_data[2*i])
+                d = add_points(origin,car_col_data[2*i+1])
+                a = cam.r_pos(line_data[2*j])
+                b = cam.r_pos(line_data[2*j+1])
+
+                if isIntersection(a, b, c, d):
+                    return (2*j , 2*j+1)                    
+        return None
+    
     def check_win(self, origin, cam):
         car_col_data = read_col_data("collider_data/car_col_data_0_0")
         line_data = read_col_data("collider_data/track_win_data_0_0")
@@ -117,9 +148,12 @@ class car_object:
         return False
 
         
-    def update_pos(self, deltaTime):
+    def update_pos(self, deltaTime, ai = False, ai_input = None):
         # input bud provede ai, nebo clovek
-        input = car_object.get_input()
+        if ai:
+            input = car_object.convert_ai_input(ai_input)
+        else:
+            input = car_object.get_input()
 
         if input[1] < 0:                                                    # w
             self.speed = min(max_speed,self.speed + acceleration * deltaTime) 
