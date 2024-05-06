@@ -108,7 +108,7 @@ class RacingEnv(Env):
         self.action_space = Box(0, 1, shape = (2,2), dtype = np.int32) # * fix after installing libraries to int
        
         # Raycast length array space
-        self.observation_space = Box(low=0, high= self.max_ray_length, shape = (self.max_ray_count,), dtype=np.float32)
+        self.observation_space = Box(low = 0, high = self.max_ray_length, shape = (24,), dtype=np.float32)
 
         # Set start temp
         self.raycast_origin = self.cam.r_pos((self.train_car.x, self.train_car.y))    
@@ -143,8 +143,6 @@ class RacingEnv(Env):
 
         gate_check = self.train_car.check_reward_gates(self.raycast_origin,self.cam,self.rewardgates_data)
         if gate_check != None:
-            print(gate_check)
-            print(len(self.rewardgates_data))
             self.rewardgates_data.pop(gate_check[0])
             self.rewardgates_data.pop(gate_check[1])
 
@@ -249,32 +247,37 @@ def train():
     model = PPO("MlpPolicy", env, verbose=1, tensorboard_log=log_path)
     model.learn(total_timesteps=10000)
     
-    model_path = os.path.join('Training', 'Saved Models', '400000_PPO_Self_Driving')
+    model_path = os.path.join('Training', 'Saved Models', '10000_PPO_Self_Driving')
     model.save(model_path)
 
+def test_model():
+    log_path = os.path.join('Training', 'Logs')
+    model_path = os.path.join('Training', 'Saved Models', '500000_PPO_Self_Driving')
+    model = PPO("MlpPolicy", env, verbose=1, tensorboard_log=log_path)
+    new_model = model.load(model_path)
 
-log_path = os.path.join('Training', 'Logs')
-model_path = os.path.join('training_data', '400000_self_driving')
-model = PPO("MlpPolicy", env, verbose=1, tensorboard_log=log_path)
-model.load(model_path)
+    episodes = 5
 
-episodes = 5
+    for episode in range(0,episodes):
+        state = env.reset()
+        done = False
+        score = 0
+        while not done:
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    pygame.quit()
+                    sys.exit()
+            env.render()
 
-for episode in range(0,episodes):
-    obs = env.reset()
-    done = False
-    score = 0
-    while not done:
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                pygame.quit()
-                sys.exit()
-        env.render()
-        action, _states = model.predict(np.ndarray((env.max_ray_count,)), obs, deterministic = True)
-        print(action)
-        print(obs)
-        obs, reward, done, truncated, info = env.step(action)
-        score += reward
-    print('Episode:{} Score:{}'.format(episode+1, score))
-env.close()
+            action = env.action_space.sample()
+            
+            state, reward, done, trancustated, info = env.step(action)
+            score += reward
+
+        print('Episode:{} Score:{}'.format(episode+1, score))
+
+    env.close()
+
+
+test_model()
 
