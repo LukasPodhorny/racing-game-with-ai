@@ -19,13 +19,13 @@ cam = camera((0,0), 1)
 
 track_index = 0
 scalar = 0.2
-#obj = pygame.transform.smoothscale_by(pygame.image.load("images/car.png").convert_alpha(), car_scale * scalar * world_pos)
-#obj_name = "car"
 centered = False
 offset = (0,0)
+#obj = pygame.transform.smoothscale_by(pygame.image.load("images/car.png").convert_alpha(), car_scale * scalar * world_pos)
+#obj_name = "car"
 obj = pygame.transform.smoothscale_by(pygame.image.load(tracks[track_index][0]).convert_alpha(), tracks[track_index][1]* scalar * world_pos)
 obj_name = "track"
-data = "rewardgate"
+data = "col"
 file_counter = 0
 collision_data = []
 
