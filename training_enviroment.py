@@ -1,4 +1,4 @@
-import gym
+import gymnasium
 from gymnasium import Env
 from gymnasium.spaces import Discrete, Box, Dict, Tuple, MultiBinary, MultiDiscrete 
 import numpy as np
@@ -270,9 +270,10 @@ for episode in range(0,episodes):
                 pygame.quit()
                 sys.exit()
         env.render()
-        action = model.predict(np.ndarray((25,), np.float32), obs)
+        action, _states = model.predict(np.ndarray((env.max_ray_count,)), obs, deterministic = True)
         print(action)
-        obs, reward, done, trancustated, info = env.step(action)
+        print(obs)
+        obs, reward, done, truncated, info = env.step(action)
         score += reward
     print('Episode:{} Score:{}'.format(episode+1, score))
 env.close()
