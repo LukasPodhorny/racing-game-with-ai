@@ -88,9 +88,9 @@ while True:
         for i in range(0,len(col_data[1])-1):
             pygame.draw.line(screen, pygame.Color("Red"), cam.r_pos(col_data[1][i]), cam.r_pos(col_data[1][i+1]), 2)
 
-        for i in range(0,len(car_col_data)-1):
-            pygame.draw.line(screen, pygame.Color("Red"), add_points(raycast_origin, car_col_data[i]), add_points(raycast_origin, car_col_data[i + 1]), 2)
-        pygame.draw.circle(screen, pygame.Color("White"), raycast_origin, 5)
+        for i in range(0,(int)(len(car_col_data)/2)):
+            pygame.draw.line(screen, pygame.Color("Green"), add_points(raycast_origin, car_col_data[2*i]), add_points(raycast_origin, car_col_data[2*i+1]), 2)
+        pygame.draw.circle(screen, pygame.Color("White"), raycast_origin, 3)
         
         # drawing raycast
         if intersections:

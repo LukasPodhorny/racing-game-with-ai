@@ -20,14 +20,14 @@ class car_object:
         input = [0,0]
         
         if keys[pygame.K_a]:
-            input[0] = -1
+            input[0] += -1
         if keys[pygame.K_d]:
-            input[0] = 1
+            input[0] += 1
         
         if keys[pygame.K_s]:
-            input[1] = 1
+            input[1] += 1
         if keys[pygame.K_w]:
-            input[1] = -1
+            input[1] += -1
         
         return input
     
@@ -35,14 +35,13 @@ class car_object:
         input = [0,0]
         
         if ai_input[0][0] == 1:
-            input[0] = -1
+            input[0] += -1
         if ai_input[0][1] == 1:
-            input[0] = 1
-        
+            input[0] += 1
         if ai_input[1][0] == 1:
-            input[1] = 1
+            input[1] += 1
         if ai_input[1][1] == 1:
-            input[1] = -1
+            input[1] += -1
         
         return input
 

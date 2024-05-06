@@ -107,7 +107,7 @@ class RacingEnv(Env):
         self.action_space = Box(0, 1, shape = (2,2), dtype = np.int32) # * fix after installing libraries to int
        
         # Raycast length array space
-        self.observation_space = Box(low = 0, high = self.max_ray_length, shape = (24,), dtype=np.float32)
+        self.observation_space = Box(low = 0, high = self.max_ray_length, shape = (self.max_ray_count,), dtype=np.float32)
 
         # Set start temp
         self.raycast_origin = self.cam.r_pos((self.train_car.x, self.train_car.y))    
@@ -138,7 +138,7 @@ class RacingEnv(Env):
         self.episode_length -= 1 * deltaTime 
         
         # Calculate reward
-        reward = -1 * deltaTime
+        reward = -3 * deltaTime
 
         gate_check = self.train_car.check_reward_gates(self.raycast_origin,self.cam,self.rewardgates_data)
         if gate_check != None:
@@ -148,7 +148,7 @@ class RacingEnv(Env):
             reward += 50
         
         if self.game_over:
-            reward -= 700
+            reward -= 200
         
         if self.win:
             reward += 700
@@ -182,9 +182,9 @@ class RacingEnv(Env):
                 pygame.draw.line(self.screen, pygame.Color("Red"), self.cam.r_pos(self.col_data[0][i]), self.cam.r_pos(self.col_data[0][i+1]), 2)
             for i in range(0,len(self.col_data[1])-1):
                 pygame.draw.line(self.screen, pygame.Color("Red"), self.cam.r_pos(self.col_data[1][i]), self.cam.r_pos(self.col_data[1][i+1]), 2)
-            for i in range(0,len(car_col_data)-1):
-                pygame.draw.line(self.screen, pygame.Color("Red"), add_points(self.raycast_origin, car_col_data[i]), add_points(self.raycast_origin, car_col_data[i + 1]), 2)
-            pygame.draw.circle(self.screen, pygame.Color("White"), self.raycast_origin, 5)
+            for i in range(0,(int)(len(car_col_data)/2)):
+                pygame.draw.line(self.screen, pygame.Color("Green"), add_points(self.raycast_origin, car_col_data[2*i]), add_points(self.raycast_origin, car_col_data[2*i+1]), 2)
+            pygame.draw.circle(self.screen, pygame.Color("White"), self.raycast_origin, 3)
             
             # drawing raycast
             if self.intersections:
@@ -223,7 +223,7 @@ def test():
     episodes = 5
 
     for episode in range(0,episodes):
-        state = env.reset()
+        state, info = env.reset(episode)
         done = False
         score = 0
         while not done:
@@ -243,22 +243,21 @@ def test():
 def train():
     log_path = os.path.join('Training', 'Logs')
     
-    model = PPO("MlpPolicy", env, verbose=1, tensorboard_log=log_path)
-    model.learn(total_timesteps=500000)
+    model = PPO("MlpPolicy", env, verbose=1, tensorboard_log=log_path,learning_rate= 0.001)
+    model.learn(total_timesteps=10000)
     
     model_path = os.path.join('Training', 'Saved Models', '10000_PPO_Self_Driving')
     model.save(model_path)
 
-def test_model():
-    log_path = os.path.join('Training', 'Logs')
-    model_path = os.path.join('Training', 'Saved Models', '500000_PPO_Self_Driving')
-    model = PPO("MlpPolicy", env, verbose=1, tensorboard_log=log_path)
+def test_model(modelname):
+    model_path = os.path.join('Training', 'Saved Models', modelname)
+    model = PPO("MlpPolicy", env, verbose=1)
     new_model = model.load(model_path)
 
     episodes = 5
 
     for episode in range(0,episodes):
-        state = env.reset()
+        obs, info = env.reset()
         done = False
         score = 0
         while not done:
@@ -268,15 +267,15 @@ def test_model():
                     sys.exit()
             env.render()
 
-            action = env.action_space.sample()
             
-            state, reward, done, trancustated, info = env.step(action)
+            action, _states = model.predict(obs)
+            obs, reward, done, trancustated, info = env.step(action)
             score += reward
 
         print('Episode:{} Score:{}'.format(episode+1, score))
 
     env.close()
 
+test()
 
-test_model()
 

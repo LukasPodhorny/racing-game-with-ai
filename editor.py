@@ -25,7 +25,8 @@ offset = (0,0)
 #obj_name = "car"
 obj = pygame.transform.smoothscale_by(pygame.image.load(tracks[track_index][0]).convert_alpha(), tracks[track_index][1]* scalar * world_pos)
 obj_name = "track"
-data = "col"
+data = "rewardgate"
+connect_lines = True
 file_counter = 0
 collision_data = []
 
@@ -71,18 +72,28 @@ while True:
     
     # drawing editing line
     if len(collision_data) > 0:
-        for i in range(0, len(collision_data)-1):
-            
-            a = add_points(multi_point(collision_data[i  ], scalar * world_pos), offset)
-            b = add_points(multi_point(collision_data[i+1], scalar * world_pos), offset)
+        if connect_lines:
+            for i in range(0, (int)(len(collision_data)/2)):
 
-            pygame.draw.line(screen, pygame.Color("RED"),a, b)
+                a = add_points(multi_point(collision_data[2*i  ], scalar * world_pos), offset)
+                b = add_points(multi_point(collision_data[2*i+1], scalar * world_pos), offset)
 
-        a = add_points(multi_point(collision_data[len(collision_data)-1], scalar * world_pos), offset)
-        b = pygame.mouse.get_pos()   
+                pygame.draw.line(screen, pygame.Color("RED"),a, b)
+        else:
+            for i in range(0, len(collision_data)-1):
+
+                a = add_points(multi_point(collision_data[i  ], scalar * world_pos), offset)
+                b = add_points(multi_point(collision_data[i+1], scalar * world_pos), offset)
+
+                pygame.draw.line(screen, pygame.Color("RED"),a, b)
+
+        if len(collision_data)%2 != 0:
+            a = add_points(multi_point(collision_data[len(collision_data)-1], scalar * world_pos), offset)
+            b = pygame.mouse.get_pos()   
 
         pygame.draw.line(screen, pygame.Color("RED"), a, b)
     
     pygame.draw.circle(screen, pygame.Color("Green"), offset, 5)
+    pygame.draw.circle(screen, pygame.Color("Red"), multi_point(tracks[track_index][2], scalar), 7)
 
     pygame.display.update()
