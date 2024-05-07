@@ -36,11 +36,23 @@ for i in range(0, col_line_count):
 getTicksLastFrame = 0
  
 # fps rendering for debugging
-debug_font = pygame.font.SysFont("Arial" , (int)(30 * world_pos) , bold = True)
 def render_fps():
-    fps_str = "fps: " + str(int(fpsClock.get_fps()))
-    fps_tex = debug_font.render(fps_str , 1, text_color)
-    screen.blit(fps_tex,(0,0))
+    render_text(screen, (0,0), "fps: " + str(int(fpsClock.get_fps())))
+
+
+# Bools for scenes
+state = "menu"
+
+def play():
+    global state
+    state = "game"
+
+def train():
+    global state
+    state = "train"
+
+button1 = Button(pygame.rect.Rect(h_w-100,h_h-50,200,100),bg_color, play, text = "Play", **BUTTON_STYLE) 
+button2 = Button(pygame.rect.Rect(h_w-100,h_h+100,200,100),bg_color, train, text = "Train", **BUTTON_STYLE)
 
 while True:
     
@@ -49,63 +61,78 @@ while True:
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
-
-    # calculating deltaTime
-    t = pygame.time.get_ticks()
-    deltaTime = (t - getTicksLastFrame) / 1000.0
-    getTicksLastFrame = t
-    
-    # GAME LOGIC START
-    # updating
-    player_car.update_pos(deltaTime)
-    cam.pos = (player_car.x - h_w, player_car.y - h_h)
-    raycast_origin = cam.r_pos((player_car.x, player_car.y))
-    lengths, intersections = player_car.raycast(raycast_origin, 1500, 25, 120, col_data, cam, debug_mode = True)
-    game_over = player_car.check_collisions(raycast_origin, col_data, cam)
-    win = player_car.check_win(raycast_origin, cam)
-
-    if game_over:
-        player_car.reset(tracks[current_track][2])
-    if win:
-        pygame.quit()
-        sys.exit()
-    
-
-    # drawing background first
-    screen.fill(bg_color)
-    cam.blit(screen, track_img, (0,0))
-
-    # drawing
-    player_car.show(cam, screen)
-
-    # rendering gizmos for debugging
-    if debug:
-        car_col_data = read_col_data("collider_data/car_col_data_0_0")
-
-        # drawing track collider boundaries
-        for i in range(0,len(col_data[0])-1):
-            pygame.draw.line(screen, pygame.Color("Red"), cam.r_pos(col_data[0][i]), cam.r_pos(col_data[0][i+1]), 2)
-        for i in range(0,len(col_data[1])-1):
-            pygame.draw.line(screen, pygame.Color("Red"), cam.r_pos(col_data[1][i]), cam.r_pos(col_data[1][i+1]), 2)
-
-        for i in range(0,(int)(len(car_col_data)/2)):
-            pygame.draw.line(screen, pygame.Color("Green"), add_points(raycast_origin, car_col_data[2*i]), add_points(raycast_origin, car_col_data[2*i+1]), 2)
-        pygame.draw.circle(screen, pygame.Color("White"), raycast_origin, 3)
         
-        # drawing raycast
-        if intersections:
-            i = 0  
-            for intersection in intersections:
-                pygame.draw.line(screen, raycast_color, raycast_origin, intersection, 1)
-                if lengths[i] < 2000:
-                    pygame.draw.circle(screen, pygame.Color("White"), intersection, 5)
-                i += 1
+        button1.check_event(event)
+        button2.check_event(event)
 
-        render_fps()
-    
-    pygame.display.update()
+    if state == "menu":        
+        screen.fill(bg_color)
 
-    # GAME LOGIC END
+        button1.update(screen)
+        button2.update(screen)
+        
+        # Header
+        render_text(screen, (h_w, h_h - 500 * world_pos), "The Racing Game", 200, pygame.Color("Black"))
+        
+        pygame.display.update()
+        
+    if state == "game":    
+        # calculating deltaTime
+        t = pygame.time.get_ticks()
+        deltaTime = (t - getTicksLastFrame) / 1000.0
+        getTicksLastFrame = t
 
-    fpsClock.tick()
+        # GAME LOGIC START
+        # updating
+        player_car.update_pos(deltaTime)
+        cam.pos = (player_car.x - h_w, player_car.y - h_h)
+        raycast_origin = cam.r_pos((player_car.x, player_car.y))
+        lengths, intersections = player_car.raycast(raycast_origin, 1500, 25, 120, col_data, cam, debug_mode = True)
+        game_over = player_car.check_collisions(raycast_origin, col_data, cam)
+        win = player_car.check_win(raycast_origin, cam)
+
+        if game_over:
+            player_car.reset(tracks[current_track][2])
+        if win:
+            pygame.quit()
+            sys.exit()
+
+
+        # drawing background first
+        screen.fill(bg_color)
+        cam.blit(screen, track_img, (0,0))
+
+        # drawing
+        player_car.show(cam, screen)
+
+        # rendering gizmos for debugging
+        if debug:
+            car_col_data = read_col_data("collider_data/car_col_data_0_0")
+
+            # drawing track collider boundaries
+            for i in range(0,len(col_data[0])-1):
+                pygame.draw.line(screen, pygame.Color("Red"), cam.r_pos(col_data[0][i]), cam.r_pos(col_data[0][i+1]), 2)
+            for i in range(0,len(col_data[1])-1):
+                pygame.draw.line(screen, pygame.Color("Red"), cam.r_pos(col_data[1][i]), cam.r_pos(col_data[1][i+1]), 2)
+
+            for i in range(0,(int)(len(car_col_data)/2)):
+                pygame.draw.line(screen, pygame.Color("Green"), add_points(raycast_origin, car_col_data[2*i]), add_points(raycast_origin, car_col_data[2*i+1]), 2)
+            pygame.draw.circle(screen, pygame.Color("White"), raycast_origin, 3)
+
+            # drawing raycast
+            if intersections:
+                i = 0  
+                for intersection in intersections:
+                    pygame.draw.line(screen, raycast_color, raycast_origin, intersection, 1)
+                    if lengths[i] < 2000:
+                        pygame.draw.circle(screen, pygame.Color("White"), intersection, 5)
+                    i += 1
+
+            render_fps()
+
+        pygame.display.update()
+
+        # GAME LOGIC END
+
+        fpsClock.tick()
 

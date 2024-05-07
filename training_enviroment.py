@@ -201,7 +201,7 @@ def test_env():
 
 def train(timesteps, name, policy = "MlpPolicy"):
     log_path = os.path.join('Training', 'Logs')
-    model = PPO(policy, env, verbose=1, tensorboard_log=log_path, learning_rate= 0.00003)
+    model = PPO(policy, env, verbose=1, tensorboard_log=log_path)
     model.learn(timesteps)
     model_path = os.path.join('Training', 'Saved Models', name)
     model.save(model_path)

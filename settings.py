@@ -13,7 +13,7 @@ max_back_speed = 0 * world_pos # -400 ZMENENOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 acceleration = 400 * world_pos
 decceleration = 180 * world_pos
 braking = 500 * world_pos # UDELAT MENSI POKUD SE TO BUDE SPATNE TRENOVATTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
-activate_turning_speed = 20 * world_pos
+activate_turning_speed = 50 * world_pos
 turning_speed = 90
 car_scale = 0.06
 
@@ -26,3 +26,16 @@ debug = True
 text_color = Color("Purple")
 raycast_color = Color("Red")
 collider_color = Color("Red")
+
+BGCOLOR = (154, 218, 111)
+RED = (255,0,0)
+BLUE = (0,0,255)
+GREEN = (0,255,0)
+BLACK = (0,0,0)
+WHITE = (255,255,255)
+ORANGE = (255,180,0)
+
+BUTTON_STYLE = {"hover_color" : BGCOLOR,
+                "clicked_color" : BGCOLOR,
+                "clicked_font_color" : BLACK,
+                "hover_font_color" : BLACK,}
