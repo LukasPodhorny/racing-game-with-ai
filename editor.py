@@ -9,7 +9,7 @@ from usefulfunctions import *
 pygame.init()
 fpsClock = pygame.time.Clock()
 
-pygame.display.set_caption("track editor")
+pygame.display.set_caption("collision editor")
 
 screen = pygame.display.set_mode(true_res,pygame.FULLSCREEN,vsync=1)
 h_w = screen.get_width()/2
@@ -17,7 +17,9 @@ h_h = screen.get_height()/2
 
 cam = camera((0,0), 1)
 
-track_index = 0
+# SETTINGS FOR EDITOR -----------------
+
+track_index = 1
 scalar = 0.2
 centered = False
 offset = (0,0)
@@ -25,10 +27,12 @@ offset = (0,0)
 #obj_name = "car"
 obj = pygame.transform.smoothscale_by(pygame.image.load(tracks[track_index][0]).convert_alpha(), tracks[track_index][1]* scalar * world_pos)
 obj_name = "track"
-data = "rewardgate"
+data = "col"
 connect_lines = True
 file_counter = 0
 collision_data = []
+
+# SETTINGS FOR EDITOR ------------------
 
 def save_data(identifier, collision_data):
     collision_data.insert(0,('x', 'y'))
@@ -61,6 +65,7 @@ while True:
     
     cam.blit(screen, obj, add_points(img_pos, offset))
 
+    # adding and saving points
     if space:
         save_data(str(track_index) + '_' + str(file_counter), collision_data)
         collision_data = []

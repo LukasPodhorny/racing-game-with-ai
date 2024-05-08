@@ -26,14 +26,15 @@ track_img = make_track(tracks[current_track])
 col_line_count = 2
 
 car_img = pygame.transform.smoothscale_by(pygame.image.load("images/car.png").convert_alpha(), car_scale*world_pos)
-player_car = car_module.car_object(car_img, tracks[current_track][2])
+player_car = car_module.car_object(car_img, tracks[current_track][2], tracks[current_track][3])
 
 
 col_data = []
 for i in range(0, col_line_count):
     col_data.append(read_col_data("collider_data/track_col_data_" + str(current_track) + "_" + str(i)))
 
-getTicksLastFrame = 0
+getTicksLastFrame = 1000
+time = 0
  
 # fps rendering for debugging
 debug_font = pygame.font.SysFont("Arial" , (int)(30 * world_pos) , bold = True)
@@ -50,10 +51,11 @@ while True:
             pygame.quit()
             sys.exit()
 
-    # calculating deltaTime
-    t = pygame.time.get_ticks()
-    deltaTime = (t - getTicksLastFrame) / 1000.0
-    getTicksLastFrame = t
+    # calculating deltaTime and time
+    time = pygame.time.get_ticks()
+    deltaTime = (time - getTicksLastFrame) / 1000.0
+    getTicksLastFrame = time
+
     
     # GAME LOGIC START
     # updating
