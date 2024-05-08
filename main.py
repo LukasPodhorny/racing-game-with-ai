@@ -103,9 +103,10 @@ while True:
             button_train.check_event(event)
             button_exit.check_event(event)
 
-        if state == "game":
+        if state == "win":
             button_next_track.check_event(event)
-            button_exit_menu.check_event(event)    
+            button_exit_menu.check_event(event)  
+  
 
     if state == "menu":        
         screen.fill(bg_color)

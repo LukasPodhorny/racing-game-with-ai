@@ -18,7 +18,7 @@ turning_speed = 90
 car_scale = 0.06
 
 # TRACKS
-tracks = [("images/maintrack5.png", 3.5, (3650*world_pos, 2550*world_pos), -35),("images/maintrack6.png", 3.5, (3650*world_pos, 2550*world_pos), -35)]
+tracks = [("images/track1.png", 3.5, (3650*world_pos, 2550*world_pos), -35),("images/track2.png", 3.5, (2800*world_pos, 1400*world_pos), 0)]
 
 # DEBUG MODE
 debug = False

@@ -18,14 +18,14 @@ h_h = screen.get_height()/2
 cam = camera((0,0), 1)
 
 track_index = 1
-scalar = 0.17
+scalar = 0.18
 centered = False
 offset = (0,0)
 #obj = pygame.transform.smoothscale_by(pygame.image.load("images/car.png").convert_alpha(), car_scale * scalar * world_pos)
 #obj_name = "car"
 obj = pygame.transform.smoothscale_by(pygame.image.load(tracks[track_index][0]).convert_alpha(), tracks[track_index][1]* scalar * world_pos)
 obj_name = "track"
-data = "col"
+data = "col" 
 connect_lines = True
 file_counter = 0
 collision_data = []
@@ -68,6 +68,7 @@ while True:
         space = False
     if mouse_down:
         collision_data.append((((pygame.mouse.get_pos()[0] - offset[0])/scalar/world_pos), ((pygame.mouse.get_pos()[1] - offset[1])/scalar/world_pos)))
+        print(pygame.mouse.get_pos())
         mouse_down = False
     
     # drawing editing line
