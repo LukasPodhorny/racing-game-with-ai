@@ -45,7 +45,7 @@ class RacingEnv(Env):
         
         self.rewardgates_data = read_col_data("collider_data/track_rewardgate_data_"+str(current_track)+"_0")
         self.car_img = pygame.transform.smoothscale_by(pygame.image.load("images/car.png").convert_alpha(), car_scale*world_pos)
-        self.train_car = car_module.car_object(self.car_img, tracks[current_track][2])
+        self.train_car = car_module.car_object(self.car_img, tracks[current_track][2], angle = tracks[current_track][3])
         self.max_ray_length = 1500
         self.max_ray_count = 25
         self.spread_angle = 120
@@ -167,7 +167,7 @@ class RacingEnv(Env):
         for i in range(0, self.col_line_count):
             col_data.append(read_col_data("collider_data/track_col_data_" + str(current_track) + "_" + str(i)))
         
-        self.train_car.reset(tracks[current_track][2])
+        self.train_car.reset(tracks[current_track][2], tracks[current_track][3])
         self.lengths, self.intersections = self.train_car.raycast(self.raycast_origin,self.max_ray_length, self.max_ray_count, self.spread_angle, self.col_data, self.cam, debug_mode=True)
         self.state = self.lengths
 

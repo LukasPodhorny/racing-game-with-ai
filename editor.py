@@ -17,15 +17,15 @@ h_h = screen.get_height()/2
 
 cam = camera((0,0), 1)
 
-track_index = 0
-scalar = 0.2
+track_index = 1
+scalar = 0.17
 centered = False
 offset = (0,0)
 #obj = pygame.transform.smoothscale_by(pygame.image.load("images/car.png").convert_alpha(), car_scale * scalar * world_pos)
 #obj_name = "car"
 obj = pygame.transform.smoothscale_by(pygame.image.load(tracks[track_index][0]).convert_alpha(), tracks[track_index][1]* scalar * world_pos)
 obj_name = "track"
-data = "rewardgate"
+data = "col"
 connect_lines = True
 file_counter = 0
 collision_data = []
@@ -72,7 +72,7 @@ while True:
     
     # drawing editing line
     if len(collision_data) > 0:
-        if connect_lines:
+        if not connect_lines:
             for i in range(0, (int)(len(collision_data)/2)):
 
                 a = add_points(multi_point(collision_data[2*i  ], scalar * world_pos), offset)
@@ -86,8 +86,9 @@ while True:
                 b = add_points(multi_point(collision_data[i+1], scalar * world_pos), offset)
 
                 pygame.draw.line(screen, pygame.Color("RED"),a, b)
+                
 
-        if len(collision_data)%2 != 0:
+        if connect_lines or len(collision_data)%2 != 0:
             a = add_points(multi_point(collision_data[len(collision_data)-1], scalar * world_pos), offset)
             b = pygame.mouse.get_pos()   
 

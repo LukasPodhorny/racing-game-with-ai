@@ -10,6 +10,8 @@ def normalize(vector):
         magnitude = math.sqrt(math.pow(vector[0], 2) + math.pow(vector[1], 2))
         return (vector[0]/magnitude, vector[1]/magnitude)
 
+
+# Stolen code for finding intersections of lines
 def calculateOffsets (A, B, C, D):   
     
     top = (D[1] - C[1]) * (A[0] - C[0]) - (D[0] - C[0]) * (A[1] - C[1])
@@ -38,6 +40,7 @@ def isIntersection(A, B, C, D):
     
     return t and u
 
+
 def make_track(parameters):
     return pygame.transform.smoothscale_by(pygame.image.load(parameters[0]).convert_alpha(), parameters[1]*world_pos)
 
@@ -61,14 +64,18 @@ def add_points(point1, point2, substract = False):
         return (point1[0] - point2[0], point1[1] - point2[1])
     return (point1[0] + point2[0], point1[1] + point2[1])
 
-def render_text(screen, pos, text, size = 30, color = pygame.Color("Black"), bold = False, font = "Arial"):
+def render_text(screen, pos, text, size = 30, color = pygame.Color("Black"), bold = False, font = "Arial", center = False):
     
     font_ = pygame.font.Font(None,(int)(size * world_pos))
     font_obj = font_.render(text , 1, color)
-    font_rect = font_obj.get_rect(center = pos)
+    if center:
+        font_rect = font_obj.get_rect(center = pos)
+    else:
+        font_rect = pos
     screen.blit(font_obj, font_rect)
             
-            
+
+# Stolen code for button class     
 class Button(object):
     """A fairly straight forward button class."""
     def __init__(self,rect,color,function,**kwargs):
@@ -152,7 +159,7 @@ class Button(object):
             color = self.hover_color
             if self.hover_font_color:
                 text = self.hover_text
-        #surface.fill(pygame.Color("black"),self.rect)
+        
         surface.fill(color,self.rect.inflate(-4,-4))
         if self.text:
             text_rect = text.get_rect(center=self.rect.center)

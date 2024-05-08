@@ -5,13 +5,13 @@ from usefulfunctions import *
 
 class car_object:
 
-    def __init__(self, img, start_pos, win_function = None):
+    def __init__(self, img, start_pos, win_function = None, angle = 0):
         self.img = img
 
-        self.x = start_pos[0] * world_pos #3900 * world_pos
-        self.y = start_pos[1] * world_pos #2700 * world_pos
+        self.x = start_pos[0] #3900 * world_pos
+        self.y = start_pos[1] #2700 * world_pos
         self.pos = (self.x, self.y)
-        self.angle = 0
+        self.angle = angle
 
         self.speed = 0
 
@@ -60,9 +60,9 @@ class car_object:
         return input
 
     
-    def reset(self, start_pos):
+    def reset(self, start_pos, start_angle):
         self.speed = 0
-        self.angle = 0
+        self.angle = start_angle
         self.x, self.y = start_pos
 
     # draw car on the screen
