@@ -20,12 +20,12 @@ class RacingEnv(Env):
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
     def __init__(self, render_mode=None, size=5):
         
-        # Initialization
+        # Initiali
         assert render_mode is None or render_mode in self.metadata["render_modes"]
         self.render_mode = render_mode
         
         pygame.init()
-        pygame.display.set_caption("training enviroment")
+        pygame.display.set_caption("racing game training enviroment")
 
         self.screen = pygame.display.set_mode(true_res,pygame.FULLSCREEN,vsync=1)
         self.h_w = self.screen.get_width()/2
@@ -45,14 +45,15 @@ class RacingEnv(Env):
         
         self.rewardgates_data = read_col_data("collider_data/track_rewardgate_data_"+str(current_track)+"_0")
         self.car_img = pygame.transform.smoothscale_by(pygame.image.load("images/car.png").convert_alpha(), car_scale*world_pos)
-        self.train_car = car_module.car_object(self.car_img, tracks[current_track][2], tracks[current_track][3])
+        self.train_car = car_module.car_object(self.car_img, tracks[current_track][2], angle = tracks[current_track][3])
         self.max_ray_length = 1500
         self.max_ray_count = 25
         self.spread_angle = 120
 
         self.getTicksLastFrame = 1000
         
-        # 3 states for ws 3 states for ad !! not four !!
+        # Can press one of four keys: w, a, s, d 
+        #self.action_space = Box(0, 1, shape = (2,2), dtype = np.int32)
         self.action_space = MultiDiscrete([3,3])
        
         # Raycast length array space
@@ -94,7 +95,6 @@ class RacingEnv(Env):
         reward = -20 * deltaTime
 
         gate_check = self.train_car.check_reward_gates(self.raycast_origin,self.cam,self.rewardgates_data)
-        
         if gate_check != None:
             self.rewardgates_data.pop(gate_check[0])
             self.rewardgates_data.pop(gate_check[1])
@@ -199,6 +199,13 @@ def test_env():
 
     env.close()
 
+def train(timesteps, name, policy = "MlpPolicy"):
+    log_path = os.path.join('Training', 'Logs')
+    model = PPO(policy, env, verbose=1, tensorboard_log=log_path)
+    model.learn(timesteps)
+    model_path = os.path.join('Training', 'Saved Models', name)
+    model.save(model_path)
+
 def test_model(name):
     path = os.path.join('Training', 'Saved Models', name)
     model = PPO.load(path)
@@ -225,18 +232,5 @@ def test_model(name):
 
     env.close()
 
-def train(timesteps, name, policy = "MlpPolicy"):
-    log_path = os.path.join('Training', 'Logs')
-    model = PPO(policy, env, verbose=1, tensorboard_log=log_path,)
-    model.learn(timesteps)
-    model_path = os.path.join('Training', 'Saved Models', name)
-    model.save(model_path)
-
-# EXECUTE ACTIONS IN TRAINING ENVIROMENT HERE ---------------
-
-#train(200000,"200000selfdrivingtest")
-#test_model("200000selfdrivingtest")
-test_env()
-
-# EXECUTE ACTIONS IN TRAINING ENVIROMENT HERE ---------------
-
+#train(20000,"20000selfdrivingtest")
+test_model("20000selfdrivingtest")
