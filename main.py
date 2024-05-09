@@ -108,6 +108,7 @@ while True:
             button_exit_menu.check_event(event)  
   
 
+
     if state == "menu":        
         screen.fill(bg_color)
 
@@ -199,4 +200,3 @@ while True:
         # GAME LOGIC END
 
         fpsClock.tick()
-

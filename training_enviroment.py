@@ -64,8 +64,6 @@ class RacingEnv(Env):
         self.lengths, self.intersections = self.train_car.raycast(self.raycast_origin,self.max_ray_length, self.max_ray_count, self.spread_angle, self.col_data, self.cam, debug_mode=True)
         self.state = self.lengths
 
-        self.last_rewardgate = 0
-
         # Set episode length to 60 seconds
         self.episode_length = 60 
         
@@ -92,19 +90,17 @@ class RacingEnv(Env):
         self.episode_length -= 1 * deltaTime 
         
         # Calculating rewards
-        reward = -20 * deltaTime
+        reward = -200 * deltaTime
 
         gate_check = self.train_car.check_reward_gates(self.raycast_origin,self.cam,self.rewardgates_data)
         if gate_check != None:
             self.rewardgates_data.pop(gate_check[0])
             self.rewardgates_data.pop(gate_check[1])
 
-            sec_between = (t - self.last_rewardgate)/1000
-            reward += 500 / sec_between * 1.5
-            self.last_rewardgate = 0
+            reward += 750
         
         if self.game_over:
-            reward -= 450
+            reward -= 200
         
         if self.win:
             reward += 1000
@@ -130,7 +126,7 @@ class RacingEnv(Env):
         self.train_car.show(self.cam, self.screen)
         
         # drawing gizmos for debugging
-        if debug:
+        if True:
             car_col_data = read_col_data("collider_data/car_col_data_0_0")
             
             # drawing track collider boundaries
@@ -149,7 +145,7 @@ class RacingEnv(Env):
                 i = 0  
                 for intersection in self.intersections:
                     pygame.draw.line(self.screen, raycast_color, self.raycast_origin, intersection, 1)
-                    if self.lengths[i] < 2000:
+                    if self.lengths[i] < self.max_ray_length:
                         pygame.draw.circle(self.screen, pygame.Color("White"), intersection, 5)
                     i += 1
 
@@ -158,7 +154,7 @@ class RacingEnv(Env):
     # Restarting the enviroment
     def reset(self, seed = random.randint(0,10000), options = None):
         super().reset(seed=seed)
-        
+
         current_track = random.randint(0,len(tracks)-2)
         self.track_img = make_track(tracks[current_track])
 
@@ -174,6 +170,7 @@ class RacingEnv(Env):
         # Reset episode length
         self.episode_length = 60 
         return self.state, {}
+
 
 env = RacingEnv(render_mode = "human")
 
@@ -201,7 +198,7 @@ def test_env():
 
 def train(timesteps, name, policy = "MlpPolicy"):
     log_path = os.path.join('Training', 'Logs')
-    model = PPO(policy, env, verbose=1, tensorboard_log=log_path)
+    model = PPO(policy, env, verbose=1, tensorboard_log=log_path,ent_coef=0.01,)
     model.learn(timesteps)
     model_path = os.path.join('Training', 'Saved Models', name)
     model.save(model_path)
@@ -232,7 +229,7 @@ def test_model(name):
 
     env.close()
 
-#train(20000,"20000selfdrivingtest")
-test_model("20000selfdrivingtest")
-
-
+#train(500000,"500000selfdrivingtest")
+test_model("500000selfdrivingtest")
+#test_env()
+#python -m tensorboard.main --logdir=[Training/Logs/PPO_27]
