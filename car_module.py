@@ -5,13 +5,13 @@ from usefulfunctions import *
 
 class car_object:
 
-    def __init__(self, img, start_pos, start_angle, win_function = None):
+    def __init__(self, img, start_pos, win_function = None, angle = 0):
         self.img = img
 
-        self.x = start_pos[0] * world_pos #3900 * world_pos
-        self.y = start_pos[1] * world_pos #2700 * world_pos
+        self.x = start_pos[0] #3900 * world_pos
+        self.y = start_pos[1] #2700 * world_pos
         self.pos = (self.x, self.y)
-        self.angle = start_angle
+        self.angle = angle
 
         self.speed = 0
 
@@ -31,6 +31,19 @@ class car_object:
         
         return input
     
+    # def convert_ai_input(ai_input):
+    #     input = [0,0]
+        
+    #     if ai_input[0][0] == 1:
+    #         input[0] += -1
+    #     if ai_input[0][1] == 1:
+    #         input[0] += 1
+    #     if ai_input[1][0] == 1:
+    #         input[1] += 1
+    #     if ai_input[1][1] == 1:
+    #         input[1] += -1
+        
+    #     return input
     def convert_ai_input(ai_input):
         input = [0,0]
         
@@ -54,7 +67,6 @@ class car_object:
 
     # draw car on the screen
     def show(self, camera, screen):
-        
         # add rotzoom for better quality, but worse performance
         img = pygame.transform.rotozoom(self.img,self.angle, 1)
         img_rect = img.get_rect(center = (self.x, self.y))
@@ -132,7 +144,7 @@ class car_object:
                 b = cam.r_pos(line_data[2*j+1])
 
                 if isIntersection(a, b, c, d):
-                    return (2*j , 2*j)   # stejný, protože potom co callnu pop tak se index změní!!!!!                  
+                    return (2*j , 2*j+1)                    
         return None
     
     def check_win(self, origin, cam):

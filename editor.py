@@ -9,7 +9,7 @@ from usefulfunctions import *
 pygame.init()
 fpsClock = pygame.time.Clock()
 
-pygame.display.set_caption("collision editor")
+pygame.display.set_caption("track editor")
 
 screen = pygame.display.set_mode(true_res,pygame.FULLSCREEN,vsync=1)
 h_w = screen.get_width()/2
@@ -17,10 +17,8 @@ h_h = screen.get_height()/2
 
 cam = camera((0,0), 1)
 
-# SETTINGS FOR EDITOR -----------------
-
 track_index = 1
-scalar = 0.2
+scalar = 0.17
 centered = False
 offset = (0,0)
 #obj = pygame.transform.smoothscale_by(pygame.image.load("images/car.png").convert_alpha(), car_scale * scalar * world_pos)
@@ -31,8 +29,6 @@ data = "col"
 connect_lines = True
 file_counter = 0
 collision_data = []
-
-# SETTINGS FOR EDITOR ------------------
 
 def save_data(identifier, collision_data):
     collision_data.insert(0,('x', 'y'))
@@ -65,7 +61,6 @@ while True:
     
     cam.blit(screen, obj, add_points(img_pos, offset))
 
-    # adding and saving points
     if space:
         save_data(str(track_index) + '_' + str(file_counter), collision_data)
         collision_data = []
@@ -77,7 +72,7 @@ while True:
     
     # drawing editing line
     if len(collision_data) > 0:
-        if connect_lines:
+        if not connect_lines:
             for i in range(0, (int)(len(collision_data)/2)):
 
                 a = add_points(multi_point(collision_data[2*i  ], scalar * world_pos), offset)
@@ -91,8 +86,9 @@ while True:
                 b = add_points(multi_point(collision_data[i+1], scalar * world_pos), offset)
 
                 pygame.draw.line(screen, pygame.Color("RED"),a, b)
+                
 
-        if len(collision_data)%2 != 0:
+        if connect_lines or len(collision_data)%2 != 0:
             a = add_points(multi_point(collision_data[len(collision_data)-1], scalar * world_pos), offset)
             b = pygame.mouse.get_pos()   
 
