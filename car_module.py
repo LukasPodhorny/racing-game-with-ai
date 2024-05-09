@@ -144,7 +144,7 @@ class car_object:
                 b = cam.r_pos(line_data[2*j+1])
 
                 if isIntersection(a, b, c, d):
-                    return (2*j , 2*j+1)                    
+                    return (2*j , 2*j)                    
         return None
     
     def check_win(self, origin, cam):
