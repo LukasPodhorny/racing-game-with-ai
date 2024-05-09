@@ -68,6 +68,7 @@ while True:
 
     if game_over:
         player_car.reset(tracks[current_track][2])
+    
     if win:
         pygame.quit()
         sys.exit()
