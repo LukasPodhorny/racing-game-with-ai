@@ -21,7 +21,7 @@ bg_color = (154, 218, 111)
 cam = camera((0,0), 1)
 
 # Setting up current track and colliders for the track
-current_track = 0
+current_track = 1
 
 def setup_track(current_track):
     global track_img

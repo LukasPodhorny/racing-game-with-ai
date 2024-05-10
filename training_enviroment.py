@@ -50,7 +50,8 @@ class RacingEnv(Env):
         self.max_ray_count = 25
         self.spread_angle = 120
 
-        self.getTicksLastFrame = 1000
+        self.getTicksLastFrame = -1000
+        self.last_gate = 0
         
         # Can press one of four keys: w, a, s, d 
         #self.action_space = Box(0, 1, shape = (2,2), dtype = np.int32)
@@ -87,23 +88,26 @@ class RacingEnv(Env):
         self.state = self.lengths
 
         # Reduce shower length by 1 second
-        self.episode_length -= 1 * deltaTime 
+        self.episode_length -= (1 * deltaTime)
         
         # Calculating rewards
-        reward = -200 * deltaTime
+
+        reward = (self.train_car.speed * deltaTime)
 
         gate_check = self.train_car.check_reward_gates(self.raycast_origin,self.cam,self.rewardgates_data)
         if gate_check != None:
             self.rewardgates_data.pop(gate_check[0])
             self.rewardgates_data.pop(gate_check[1])
 
-            reward += 750
+            time_between = t - self.last_gate
+            reward += 1900/(time_between/1000)
+            self.last_gate = t
         
         if self.game_over:
-            reward -= 200
+            reward -= 4000
         
         if self.win:
-            reward += 1000
+            reward += 50000
         
         
         # Check if the episode is done
@@ -198,7 +202,7 @@ def test_env():
 
 def train(timesteps, name, policy = "MlpPolicy"):
     log_path = os.path.join('Training', 'Logs')
-    model = PPO(policy, env, verbose=1, tensorboard_log=log_path,ent_coef=0.01,)
+    model = PPO(policy, env, verbose=1, tensorboard_log=log_path,ent_coef=0.01, clip_range=0.3)
     model.learn(timesteps)
     model_path = os.path.join('Training', 'Saved Models', name)
     model.save(model_path)
@@ -232,4 +236,4 @@ def test_model(name):
 #train(500000,"500000selfdrivingtest")
 test_model("500000selfdrivingtest")
 #test_env()
-#python -m tensorboard.main --logdir=[Training/Logs/PPO_27]
+#tensorboard --logdir=[Training/Logs/PP0_38"]
