@@ -50,7 +50,8 @@ class RacingEnv(Env):
         self.max_ray_count = 25
         self.spread_angle = 120
 
-        self.getTicksLastFrame = 1000
+        self.getTicksLastFrame = -14
+        self.last_reward_gate = 0
         
         # Can press one of four keys: w, a, s, d 
         #self.action_space = Box(0, 1, shape = (2,2), dtype = np.int32)
@@ -90,20 +91,22 @@ class RacingEnv(Env):
         self.episode_length -= 1 * deltaTime 
         
         # Calculating rewards
-        reward = -200 * deltaTime
+        #reward = -20 * deltaTime
+
+        reward = -5000
 
         gate_check = self.train_car.check_reward_gates(self.raycast_origin,self.cam,self.rewardgates_data)
         if gate_check != None:
             self.rewardgates_data.pop(gate_check[0])
             self.rewardgates_data.pop(gate_check[1])
 
-            reward += 750
+            reward += 1000
         
         if self.game_over:
-            reward -= 200
+            reward -= 2700
         
         if self.win:
-            reward += 1000
+            reward += 15000
         
         
         # Check if the episode is done
@@ -155,6 +158,8 @@ class RacingEnv(Env):
     def reset(self, seed = random.randint(0,10000), options = None):
         super().reset(seed=seed)
 
+        self.last_reward_gate = 0
+
         current_track = random.randint(0,len(tracks)-2)
         self.track_img = make_track(tracks[current_track])
 
@@ -196,13 +201,6 @@ def test_env():
 
     env.close()
 
-def train(timesteps, name, policy = "MlpPolicy"):
-    log_path = os.path.join('Training', 'Logs')
-    model = PPO(policy, env, verbose=1, tensorboard_log=log_path,ent_coef=0.01,)
-    model.learn(timesteps)
-    model_path = os.path.join('Training', 'Saved Models', name)
-    model.save(model_path)
-
 def test_model(name):
     path = os.path.join('Training', 'Saved Models', name)
     model = PPO.load(path)
@@ -229,7 +227,16 @@ def test_model(name):
 
     env.close()
 
-#train(500000,"500000selfdrivingtest")
-test_model("500000selfdrivingtest")
+def train(timesteps, name, policy = "MlpPolicy"):
+    log_path = os.path.join('Training', 'Logs')
+    model = PPO(policy, env, verbose=1, tensorboard_log=log_path,ent_coef=0.01)
+    model.learn(timesteps)
+    model_path = os.path.join('Training', 'Saved Models', name)
+    model.save(model_path)
+
+#train(20000,"20000selfdrivingtest")
+#test_model("20000selfdrivingtest")
+train(5000000,"5000000selfdrivingtest")
+#test_model("5000000selfdrivingtest")
 #test_env()
-#python -m tensorboard.main --logdir=[Training/Logs/PPO_27]
+#tensorboard --logdir=Training/Logs/PPO_30
