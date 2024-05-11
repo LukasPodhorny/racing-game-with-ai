@@ -102,7 +102,7 @@ class RacingEnv(Env):
             reward += 1000
         
         if self.game_over:
-            reward -= 5000
+            reward -= 6000
         
         if self.win:
             reward += 30_000
@@ -240,8 +240,8 @@ def train(timesteps, name, policy = "MlpPolicy"):
     model_path = os.path.join('Training', 'Saved Models', name)
     model.save(model_path)
 
-#train(20000,"20000selfdrivingtest")
-test_model("30_000selfdrivingtest")
+train(30_000,"30_000selfdrivingtest")
+#test_model("30_000selfdrivingtest")
 #train(30_000,"30_000selfdrivingtest")
 #test_model("5000000selfdrivingtest")
 #test_env()
