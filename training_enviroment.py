@@ -44,14 +44,16 @@ class RacingEnv(Env):
         
         
         self.rewardgates_data = read_col_data("collider_data/track_rewardgate_data_"+str(current_track)+"_0")
+        self.max_reward_gates = len(self.rewardgates_data)/2
         self.car_img = pygame.transform.smoothscale_by(pygame.image.load("images/car.png").convert_alpha(), car_scale*world_pos)
         self.train_car = car_module.car_object(self.car_img, tracks[current_track][2], angle = tracks[current_track][3])
         self.max_ray_length = 1500
         self.max_ray_count = 25
         self.spread_angle = 120
 
-        self.getTicksLastFrame = -1000
+        self.getTicksLastFrame = None
         self.last_gate = 0
+        self.last_episode_t = 0
         
         # Can press one of four keys: w, a, s, d 
         #self.action_space = Box(0, 1, shape = (2,2), dtype = np.int32)
@@ -69,29 +71,32 @@ class RacingEnv(Env):
         self.episode_length = 60 
         
     def step(self, action):
-        
+
         # calculating deltatime
         t = pygame.time.get_ticks()
-        deltaTime = (t - self.getTicksLastFrame) / 1000.0
+        if self.getTicksLastFrame:
+            deltaTime = (t - self.getTicksLastFrame) / 1000.0
+        else:
+            deltaTime = 0.016
 
         self.getTicksLastFrame = t
-
+        time = (t - self.last_episode_t)/1000
 
         # updating the game
         self.train_car.update_pos(deltaTime, True, action)
         self.cam.pos = (self.train_car.x - self.h_w, self.train_car.y - self.h_h)
         self.raycast_origin = self.cam.r_pos((self.train_car.x, self.train_car.y))
         self.lengths, self.intersections = self.train_car.raycast(self.raycast_origin, self.max_ray_length, self.max_ray_count, self.spread_angle, self.col_data, self.cam, debug_mode = True)
-        self.game_over = self.train_car.check_collisions(self.raycast_origin, self.col_data, self.cam)
-        self.win = self.train_car.check_win(self.raycast_origin, self.cam)
+        game_over = self.train_car.check_collisions(self.raycast_origin, self.col_data, self.cam)
+        win = self.train_car.check_win(self.raycast_origin, self.cam)
 
         self.state = self.lengths
 
-        # Reduce shower length by 1 second
+        # Reduce episode length by 1 second
         self.episode_length -= (1 * deltaTime)
         
         # Calculating rewards
-        reward = (self.train_car.speed * deltaTime)
+        reward = (self.train_car.speed * deltaTime) * 10
 
         gate_check = self.train_car.check_reward_gates(self.raycast_origin,self.cam,self.rewardgates_data)
         
@@ -101,15 +106,14 @@ class RacingEnv(Env):
 
             reward += 1000
         
-        if self.game_over:
-            reward -= 6000
+        if game_over:
+            reward -= 10_000
         
-        if self.win:
+        if win:
             reward += 30_000
         
-        
         # Check if the episode is done
-        if self.episode_length <= 0 or self.game_over or self.win: 
+        if self.episode_length <= 0 or game_over or win: 
             done = True
         else:
             done = False
@@ -128,28 +132,30 @@ class RacingEnv(Env):
         self.train_car.show(self.cam, self.screen)
         
         # drawing gizmos for debugging
-        if True:
-            car_col_data = read_col_data("collider_data/car_col_data_0_0")
-            
-            # drawing track collider boundaries
-            for i in range(0,len(self.col_data[0])-1):
-                pygame.draw.line(self.screen, pygame.Color("Red"), self.cam.r_pos(self.col_data[0][i]), self.cam.r_pos(self.col_data[0][i+1]), 2)
-            for i in range(0,len(self.col_data[1])-1):
-                pygame.draw.line(self.screen, pygame.Color("Red"), self.cam.r_pos(self.col_data[1][i]), self.cam.r_pos(self.col_data[1][i+1]), 2)
-            
-            # drawing car collider
-            for i in range(0,(int)(len(car_col_data)/2)):
-                pygame.draw.line(self.screen, pygame.Color("Green"), add_points(self.raycast_origin, car_col_data[2*i]), add_points(self.raycast_origin, car_col_data[2*i+1]), 2)
-            pygame.draw.circle(self.screen, pygame.Color("White"), self.raycast_origin, 3)
-            
-            # drawing raycast
-            if self.intersections:
-                i = 0  
-                for intersection in self.intersections:
-                    pygame.draw.line(self.screen, raycast_color, self.raycast_origin, intersection, 1)
-                    if self.lengths[i] < self.max_ray_length:
-                        pygame.draw.circle(self.screen, pygame.Color("White"), intersection, 5)
-                    i += 1
+    
+        car_col_data = read_col_data("collider_data/car_col_data_0_0")
+        
+        # drawing track collider boundaries
+        for i in range(0,len(self.col_data[0])-1):
+            pygame.draw.line(self.screen, pygame.Color("Red"), self.cam.r_pos(self.col_data[0][i]), self.cam.r_pos(self.col_data[0][i+1]), 2)
+        for i in range(0,len(self.col_data[1])-1):
+            pygame.draw.line(self.screen, pygame.Color("Red"), self.cam.r_pos(self.col_data[1][i]), self.cam.r_pos(self.col_data[1][i+1]), 2)
+        for i in range(0,(int)(len(self.rewardgates_data)/2)):
+            pygame.draw.line(self.screen, pygame.Color("Blue"), self.cam.r_pos(self.rewardgates_data[2*i]), self.cam.r_pos(self.rewardgates_data[2*i+1]), 2)
+        
+        # drawing car collider
+        for i in range(0,(int)(len(car_col_data)/2)):
+            pygame.draw.line(self.screen, pygame.Color("Green"), add_points(self.raycast_origin, car_col_data[2*i]), add_points(self.raycast_origin, car_col_data[2*i+1]), 2)
+        pygame.draw.circle(self.screen, pygame.Color("White"), self.raycast_origin, 3)
+        
+        # drawing raycast
+        if self.intersections:
+            i = 0  
+            for intersection in self.intersections:
+                pygame.draw.line(self.screen, raycast_color, self.raycast_origin, intersection, 1)
+                if self.lengths[i] < self.max_ray_length:
+                    pygame.draw.circle(self.screen, pygame.Color("White"), intersection, 5)
+                i += 1
 
         pygame.display.update()
     
@@ -157,15 +163,17 @@ class RacingEnv(Env):
     def reset(self, seed = random.randint(0,10000), options = None):
         super().reset(seed=seed)
 
+        self.last_episode_t = pygame.time.get_ticks()
         self.last_reward_gate = 0
 
         current_track = random.randint(0,len(tracks)-2)
         self.track_img = make_track(tracks[current_track])
 
-        col_data = []
-        
+        self.col_data = []    
         for i in range(0, self.col_line_count):
-            col_data.append(read_col_data("collider_data/track_col_data_" + str(current_track) + "_" + str(i)))
+            self.col_data.append(read_col_data("collider_data/track_col_data_" + str(current_track) + "_" + str(i)))
+        
+        self.rewardgates_data = read_col_data("collider_data/track_rewardgate_data_"+str(current_track)+"_0")
         
         self.train_car.reset(tracks[current_track][2], tracks[current_track][3])
         self.lengths, self.intersections = self.train_car.raycast(self.raycast_origin,self.max_ray_length, self.max_ray_count, self.spread_angle, self.col_data, self.cam, debug_mode=True)
@@ -202,7 +210,7 @@ def test_env():
 
 def train(timesteps, name, policy = "MlpPolicy"):
     log_path = os.path.join('Training', 'Logs')
-    model = PPO(policy, env, verbose=1, tensorboard_log=log_path,ent_coef=0.01, clip_range=0.3)
+    model = PPO(policy, env, verbose=1, tensorboard_log=log_path,ent_coef=0.01)
     model.learn(timesteps)
     model_path = os.path.join('Training', 'Saved Models', name)
     model.save(model_path)
@@ -240,8 +248,9 @@ def train(timesteps, name, policy = "MlpPolicy"):
     model_path = os.path.join('Training', 'Saved Models', name)
     model.save(model_path)
 
-train(30_000,"30_000selfdrivingtest")
-#test_model("30_000selfdrivingtest")
+train(5_000_000,"5_000_000selfdrivingtest")
+#test_model("30_000selfdrivingtest6")
+#evaluate_policy(PPO.load(os.path.join('Training', 'Saved Models', "30_000selfdrivingtest")),env, render = True,deterministic=False)
 #train(30_000,"30_000selfdrivingtest")
 #test_model("5000000selfdrivingtest")
 #test_env()
