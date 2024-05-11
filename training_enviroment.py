@@ -91,10 +91,10 @@ class RacingEnv(Env):
         self.episode_length -= (1 * deltaTime)
         
         # Calculating rewards
-
         reward = (self.train_car.speed * deltaTime)
 
         gate_check = self.train_car.check_reward_gates(self.raycast_origin,self.cam,self.rewardgates_data)
+        
         if gate_check != None:
             self.rewardgates_data.pop(gate_check[0])
             self.rewardgates_data.pop(gate_check[1])
@@ -102,10 +102,10 @@ class RacingEnv(Env):
             reward += 1000
         
         if self.game_over:
-            reward -= 2700
+            reward -= 5000
         
         if self.win:
-            reward += 15000
+            reward += 30_000
         
         
         # Check if the episode is done
@@ -196,22 +196,6 @@ def test_env():
             n_state, reward, done, trancustated, info = env.step(action)
             score += reward
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         print('Episode:{} Score:{}'.format(episode+1, score))
 
     env.close()
@@ -257,8 +241,8 @@ def train(timesteps, name, policy = "MlpPolicy"):
     model.save(model_path)
 
 #train(20000,"20000selfdrivingtest")
-#test_model("20000selfdrivingtest")
-train(5000000,"5000000selfdrivingtest")
+test_model("30_000selfdrivingtest")
+#train(30_000,"30_000selfdrivingtest")
 #test_model("5000000selfdrivingtest")
 #test_env()
 #tensorboard --logdir=[Training/Logs/PP0_38"]
