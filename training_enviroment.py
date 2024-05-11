@@ -88,7 +88,7 @@ class RacingEnv(Env):
         self.state = self.lengths
 
         # Reduce shower length by 1 second
-        self.episode_length -= (1 * deltaTime)
+        self.episode_length -= (1 * deltaTime) * 3
         
         # Calculating rewards
         reward = (self.train_car.speed * deltaTime)
@@ -99,10 +99,10 @@ class RacingEnv(Env):
             self.rewardgates_data.pop(gate_check[0])
             self.rewardgates_data.pop(gate_check[1])
 
-            reward += 1000
+            reward += 1_000
         
         if self.game_over:
-            reward -= 5000
+            reward -= 15_000
         
         if self.win:
             reward += 30_000
@@ -243,6 +243,6 @@ def train(timesteps, name, policy = "MlpPolicy"):
 #train(20000,"20000selfdrivingtest")
 test_model("30_000selfdrivingtest")
 #train(30_000,"30_000selfdrivingtest")
-#test_model("5000000selfdrivingtest")
+#test_model("2_000_000selfdrivingtest")
 #test_env()
 #tensorboard --logdir=[Training/Logs/PP0_38"]
