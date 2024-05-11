@@ -99,15 +99,13 @@ class RacingEnv(Env):
             self.rewardgates_data.pop(gate_check[0])
             self.rewardgates_data.pop(gate_check[1])
 
-            time_between = t - self.last_gate
-            reward += 1900/(time_between/1000)
-            self.last_gate = t
+            reward += 1000
         
         if self.game_over:
-            reward -= 4000
+            reward -= 2700
         
         if self.win:
-            reward += 50000
+            reward += 15000
         
         
         # Check if the episode is done
@@ -159,6 +157,8 @@ class RacingEnv(Env):
     def reset(self, seed = random.randint(0,10000), options = None):
         super().reset(seed=seed)
 
+        self.last_reward_gate = 0
+
         current_track = random.randint(0,len(tracks)-2)
         self.track_img = make_track(tracks[current_track])
 
@@ -195,6 +195,22 @@ def test_env():
             action = env.action_space.sample()
             n_state, reward, done, trancustated, info = env.step(action)
             score += reward
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         print('Episode:{} Score:{}'.format(episode+1, score))
 
@@ -233,7 +249,16 @@ def test_model(name):
 
     env.close()
 
-#train(500000,"500000selfdrivingtest")
-test_model("500000selfdrivingtest")
+def train(timesteps, name, policy = "MlpPolicy"):
+    log_path = os.path.join('Training', 'Logs')
+    model = PPO(policy, env, verbose=1, tensorboard_log=log_path,ent_coef=0.01)
+    model.learn(timesteps)
+    model_path = os.path.join('Training', 'Saved Models', name)
+    model.save(model_path)
+
+#train(20000,"20000selfdrivingtest")
+#test_model("20000selfdrivingtest")
+train(5000000,"5000000selfdrivingtest")
+#test_model("5000000selfdrivingtest")
 #test_env()
 #tensorboard --logdir=[Training/Logs/PP0_38"]
