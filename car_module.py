@@ -153,7 +153,7 @@ class car_object:
     def update_pos(self, deltaTime, ai_input = None):
         
         # input will provide either person or ai model
-        if len(ai_input)>0:
+        if ai_input != None:
             input = car_object.convert_ai_input(ai_input)
         else:
             input = car_object.get_input()

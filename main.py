@@ -173,7 +173,7 @@ while True:
         player_car.show(cam, screen)
         
         # drawing GUI
-        render_text(screen, (h_w,80*world_pos), "time: " + str(int(time)), size = 80, color = pygame.Color("White"), center= True)
+        render_text(screen, (h_w,100*world_pos), str(int(time)), size = 100, color = pygame.Color("White"), center= True)
 
 
         # rendering gizmos for debugging
