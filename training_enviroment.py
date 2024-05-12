@@ -32,7 +32,7 @@ class RacingEnv(Env):
         self.h_h = self.screen.get_height()/2
         self.bg_color = (154, 218, 111)
 
-        self.cam = camera((0,0), 1)
+        self.cam = camera((0,0))
 
         current_track = random.randint(0,len(tracks)-2)
         self.track_img = make_track(tracks[current_track])
@@ -82,7 +82,7 @@ class RacingEnv(Env):
 
 
         # updating the game
-        self.train_car.update_pos(deltaTime, True, action)
+        self.train_car.update_pos(deltaTime, action)
         self.cam.pos = (self.train_car.x - self.h_w, self.train_car.y - self.h_h)
         self.raycast_origin = self.cam.r_pos((self.train_car.x, self.train_car.y))
         self.lengths, self.intersections = self.train_car.raycast(self.raycast_origin, self.max_ray_length, self.max_ray_count, self.spread_angle, self.col_data, self.cam, debug_mode = True)

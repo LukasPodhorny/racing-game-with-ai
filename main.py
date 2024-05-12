@@ -18,7 +18,7 @@ h_w = screen.get_width()/2
 h_h = screen.get_height()/2
 bg_color = (154, 218, 111)
 
-cam = camera((0,0), 1)
+cam = camera((0,0))
 
 # Setting up current track and colliders for the track
 current_track = 1
