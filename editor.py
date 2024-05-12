@@ -6,30 +6,36 @@ from settings import *
 import csv
 from usefulfunctions import *
  
+# Init
 pygame.init()
 fpsClock = pygame.time.Clock()
-
 pygame.display.set_caption("track editor")
 
+# Setting up screen
 screen = pygame.display.set_mode(true_res,pygame.FULLSCREEN,vsync=1)
 h_w = screen.get_width()/2
 h_h = screen.get_height()/2
 
 cam = camera((0,0), 1)
 
+
+
+#---------------------------SETTINGS-------------------------------- 
 track_index = 0
 scalar = 0.2
 centered = False
 offset = (0,0)
-#obj = pygame.transform.smoothscale_by(pygame.image.load("images/car.png").convert_alpha(), car_scale * scalar * world_pos)
-#obj_name = "car"
 obj = pygame.transform.smoothscale_by(pygame.image.load(tracks[track_index][0]).convert_alpha(), tracks[track_index][1]* scalar * world_pos)
 obj_name = "track"
 data = "rewardgate" 
 connect_lines = False
 file_counter = 0
 collision_data = []
+#---------------------------SETTINGS-------------------------------- 
 
+
+
+# Save array as .csv
 def save_data(identifier, collision_data):
     collision_data.insert(0,('x', 'y'))
 
@@ -37,7 +43,9 @@ def save_data(identifier, collision_data):
         writer = csv.writer(file)
         writer.writerows(collision_data)
 
+
 while True:
+    
     mouse_down = False
     space = False
 
@@ -71,7 +79,8 @@ while True:
         print(pygame.mouse.get_pos())
         mouse_down = False
     
-    # drawing editing line
+
+    # drawing editing line and some debuging info
     if len(collision_data) > 0:
         if not connect_lines:
             for i in range(0, (int)(len(collision_data)/2)):
@@ -97,5 +106,6 @@ while True:
     
     pygame.draw.circle(screen, pygame.Color("Green"), offset, 5)
     pygame.draw.circle(screen, pygame.Color("Red"), multi_point(tracks[track_index][2], scalar), 7)
+
 
     pygame.display.update()

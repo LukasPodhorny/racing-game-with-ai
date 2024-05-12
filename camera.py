@@ -1,8 +1,8 @@
 
 class camera:
-    def __init__(self, pos, scale = 1):
+    # you can also include scale, but I didn't chose to, because of performance
+    def __init__(self, pos):
         self.pos = pos
-        self.scale = scale
     
     def blit(self, screen, image, pos):
         screen.blit(image, (pos[0]-self.pos[0],pos[1]-self.pos[1]))
