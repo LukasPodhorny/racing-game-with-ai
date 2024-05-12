@@ -5,11 +5,11 @@ from usefulfunctions import *
 
 class car_object:
 
-    def __init__(self, img, start_pos, win_function = None, angle = 0):
+    def __init__(self, img, start_pos, angle = 0):
         self.img = img
 
-        self.x = start_pos[0] #3900 * world_pos
-        self.y = start_pos[1] #2700 * world_pos
+        self.x = start_pos[0]
+        self.y = start_pos[1]
         self.pos = (self.x, self.y)
         self.angle = angle
 
@@ -31,19 +31,6 @@ class car_object:
         
         return input
     
-    # def convert_ai_input(ai_input):
-    #     input = [0,0]
-        
-    #     if ai_input[0][0] == 1:
-    #         input[0] += -1
-    #     if ai_input[0][1] == 1:
-    #         input[0] += 1
-    #     if ai_input[1][0] == 1:
-    #         input[1] += 1
-    #     if ai_input[1][1] == 1:
-    #         input[1] += -1
-        
-    #     return input
     def convert_ai_input(ai_input):
         input = [0,0]
         
@@ -59,7 +46,7 @@ class car_object:
         
         return input
 
-    
+    # reset pos
     def reset(self, start_pos, start_angle):
         self.speed = 0
         self.angle = start_angle
@@ -67,7 +54,7 @@ class car_object:
 
     # draw car on the screen
     def show(self, camera, screen):
-        # add rotzoom for better quality, but worse performance
+        # rotzoom is for better quality, but for performance choose rotate
         img = pygame.transform.rotozoom(self.img,self.angle, 1)
         img_rect = img.get_rect(center = (self.x, self.y))
         camera.blit(screen, img, img_rect)
@@ -114,9 +101,9 @@ class car_object:
         return length, None
 
     def check_collisions(self, origin, col_data, cam):
+        # car_col_data is a separeted line data, not connected, cuz it's better
         car_col_data = read_col_data("collider_data/car_col_data_0_0")
 
-        # each line will be separated for optimalization purpose
         for i in range(0, (int)(len(car_col_data)/2)): 
             c = add_points(origin,car_col_data[2*i])
             d = add_points(origin,car_col_data[2*i+1])
@@ -133,6 +120,7 @@ class car_object:
         return False
     
     def check_reward_gates(self, origin, cam, rewardgates_data):
+        # car_col_data is a separeted line data, not connected, cuz it's better
         car_col_data = read_col_data("collider_data/car_col_data_0_0")
         line_data = rewardgates_data
 
@@ -148,6 +136,7 @@ class car_object:
         return None
     
     def check_win(self, origin, cam):
+        # car_col_data is a separeted line data, not connected, cuz it's better
         car_col_data = read_col_data("collider_data/car_col_data_0_0")
         line_data = read_col_data("collider_data/track_win_data_0_0")
 
@@ -161,13 +150,15 @@ class car_object:
         return False
 
         
-    def update_pos(self, deltaTime, ai = False, ai_input = None):
-        # input will provide either person or ai
-        if ai:
+    def update_pos(self, deltaTime, ai_input = None):
+        
+        # input will provide either person or ai model
+        if ai_input:
             input = car_object.convert_ai_input(ai_input)
         else:
             input = car_object.get_input()
 
+        # logic for driving the car
         if input[1] < 0:                                                    # w
             self.speed = min(max_speed,self.speed + acceleration * deltaTime) 
         elif input[1] > 0:                                                  # s
@@ -178,10 +169,11 @@ class car_object:
             elif self.speed < 0:
                 self.speed = min(0, self.speed + decceleration * deltaTime)
 
+        # logic for turning the car
         if abs(self.speed) > activate_turning_speed:
             self.angle -= input[0] * turning_speed * deltaTime
         
-
+        # applying the speed correctly
         fwd_dir = normalize((math.cos(math.radians(self.angle)), -math.sin(math.radians(self.angle))))
         self.x += fwd_dir[0] * self.speed * deltaTime
         self.y += fwd_dir[1] * self.speed * deltaTime
