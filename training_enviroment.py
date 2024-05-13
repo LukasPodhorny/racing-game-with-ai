@@ -248,9 +248,9 @@ def train(timesteps, name, policy = "MlpPolicy"):
     model_path = os.path.join('Training', 'Saved Models', name)
     model.save(model_path)
 
-train(5_000_000,"5_000_000selfdrivingtest")
-#test_model("30_000selfdrivingtest6")
-#evaluate_policy(PPO.load(os.path.join('Training', 'Saved Models', "30_000selfdrivingtest")),env, render = True,deterministic=False)
+#train(5_000_000,"5_000_000selfdrivingtest")
+#test_model("5_000_000selfdrivingtest")
+evaluate_policy(PPO.load(os.path.join('Training', 'Saved Models', "5_000_000selfdrivingtest")),env, render = True,deterministic=False)
 #train(30_000,"30_000selfdrivingtest")
 #test_model("2_000_000selfdrivingtest")
 #test_env()
