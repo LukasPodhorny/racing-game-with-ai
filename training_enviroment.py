@@ -252,7 +252,7 @@ env = RacingEnv(render_mode = "human")
 # train(5_000_000,"5_000_000selfdrivingtest", env)
 # test_model("30_000selfdrivingtest6", env)
 # test_env(env)
-# evaluate_policy(PPO.load(os.path.join('Training', 'Saved Models', "30_000selfdrivingtest")),env, render = True,deterministic=False)
+evaluate_policy(PPO.load(os.path.join('Training', 'Saved Models', "5_000_000selfdrivingtest")),env, render = True)
 # tensorboard --logdir="Training/Logs/PP0_38"
 
 #----------------CHOOSE WHAT TYPE OF ACTION YOU WANT TO DO HERE----------------
