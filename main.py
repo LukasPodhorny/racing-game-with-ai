@@ -6,7 +6,7 @@ from camera import *
 from settings import *
 from usefulfunctions import *
 
-# Init
+# Initialization
 pygame.init()
 pygame.display.set_caption("racing game")
 fpsClock = pygame.time.Clock()
@@ -18,7 +18,7 @@ h_w = screen.get_width()/2
 h_h = screen.get_height()/2
 bg_color = (154, 218, 111)
 
-cam = camera((0,0), 1)
+cam = camera((0,0))
 
 # Setting up current track and colliders for the track
 current_track = 1
@@ -36,12 +36,14 @@ def setup_track(current_track):
 
 setup_track(current_track)
 
+
 # Setting up car object
 car_img = pygame.transform.smoothscale_by(pygame.image.load("images/car.png").convert_alpha(), car_scale*world_pos)
 player_car = car_module.car_object(car_img, tracks[current_track][2], angle = tracks[current_track][3])
 
+
 # Time variables
-getTicksLastFrame = 0
+getTicksLastFrame = None
 reset_time = 0
 finish_time = 0
 
@@ -127,7 +129,7 @@ while True:
         button_next_track.update(screen)
         button_exit_menu.update(screen) 
         
-        # Header
+        # Header and time score
         render_text(screen, (h_w, h_h - 500 * world_pos), "Track " + str(current_track+1) + " completed", 200, pygame.Color("Black"), center=True)
         render_text(screen, (h_w, h_h - 350 * world_pos), str((int)(finish_time)) + " seconds", 200, pygame.Color("Black"), center=True)
         
@@ -135,14 +137,17 @@ while True:
         
     if state == "game":    
         
-        # calculating deltaTime
+        # calculating deltaTime and time
         t = pygame.time.get_ticks()
-        deltaTime = (t - getTicksLastFrame) / 1000.0
+        if getTicksLastFrame:
+            deltaTime = (t - getTicksLastFrame) / 1000.0
+        else:
+            deltaTime = 0.015
         getTicksLastFrame = t
 
         time = t/1000 - reset_time
 
-        # GAME LOGIC START
+
         # updating
         player_car.update_pos(deltaTime)
         cam.pos = (player_car.x - h_w, player_car.y - h_h)
@@ -164,11 +169,12 @@ while True:
         screen.fill(bg_color)
         cam.blit(screen, track_img, (0,0))
 
-        # drawing
+        # drawing sprites
         player_car.show(cam, screen)
         
-        # GUI
-        render_text(screen, (h_w,80*world_pos), "time: " + str(int(time)), size = 80, color = pygame.Color("White"), center= True)
+        # drawing GUI
+        render_text(screen, (h_w,100*world_pos), str(int(time)), size = 100, color = pygame.Color("White"), center= True)
+
 
         # rendering gizmos for debugging
         if debug:
@@ -195,8 +201,6 @@ while True:
 
             render_text(screen, (screen.get_width() - 90 * world_pos, 0), "fps: " + str(int(fpsClock.get_fps())), size=40, color = pygame.Color("Red"))
 
+        
         pygame.display.update()
-
-        # GAME LOGIC END
-
         fpsClock.tick()
