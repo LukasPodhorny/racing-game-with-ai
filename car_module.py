@@ -135,10 +135,10 @@ class car_object:
                     return (2*j , 2*j)                    
         return None
     
-    def check_win(self, origin, cam):
+    def check_win(self, origin, cam, current_track):
         # car_col_data is a separeted line data, not connected, cuz it's better
         car_col_data = read_col_data("collider_data/car_col_data_0_0")
-        line_data = read_col_data("collider_data/track_win_data_0_0")
+        line_data = read_col_data("collider_data/track_win_data_"+str(current_track)+"_0")
 
         for i in range(0, (int)(len(car_col_data)/2)): 
             c = add_points(origin,car_col_data[2*i])

@@ -34,7 +34,7 @@ class RacingEnv(Env):
 
         self.cam = camera((0,0))
 
-        current_track = random.randint(0,len(tracks)-2)
+        current_track = random.randint(0,len(tracks)-1)
         self.track_img = make_track(tracks[current_track])
         self.col_line_count = 2
 
@@ -167,13 +167,13 @@ class RacingEnv(Env):
     
 
     # Restarting the enviroment
-    def reset(self, seed = random.randint(0,10000), options = None):
-        super().reset(seed=seed)
+    def reset(self, options = None):
+        super().reset()
 
         self.last_episode_t = pygame.time.get_ticks()
         self.last_reward_gate = 0
 
-        current_track = random.randint(0,len(tracks)-2)
+        current_track = random.randint(0,len(tracks)-1)
         self.track_img = make_track(tracks[current_track])
 
         self.col_data = []    

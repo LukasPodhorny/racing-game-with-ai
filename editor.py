@@ -21,14 +21,14 @@ cam = camera((0,0))
 
 
 #---------------------------SETTINGS-------------------------------- 
-track_index = 0
+track_index = 1
 scalar = 0.2
 centered = False
 offset = (0,0)
 obj = pygame.transform.smoothscale_by(pygame.image.load(tracks[track_index][0]).convert_alpha(), tracks[track_index][1]* scalar * world_pos)
 obj_name = "track"
-data = "col" 
-connect_lines = True
+data = "win" 
+connect_lines = False
 file_counter = 0
 collision_data = []
 #---------------------------SETTINGS-------------------------------- 

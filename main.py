@@ -21,7 +21,7 @@ bg_color = (154, 218, 111)
 cam = camera((0,0))
 
 # Setting up current track and colliders for the track
-current_track = 1
+current_track = 0
 
 def setup_track(current_track):
     global track_img
@@ -49,6 +49,8 @@ finish_time = 0
 
 # State is scene that will be rendered
 state = "menu"
+win_number = 0
+max_win_number = 2
 
 
 # Setting up buttons
@@ -107,9 +109,12 @@ while True:
 
         if state == "win":
             button_next_track.check_event(event)
-            button_exit_menu.check_event(event)  
-  
+            button_exit_menu.check_event(event) 
 
+        if state == "wingame":
+           button_exit_menu.check_event(event)  
+        
+  
 
     if state == "menu":        
         screen.fill(bg_color)
@@ -127,10 +132,21 @@ while True:
         screen.fill(bg_color)
 
         button_next_track.update(screen)
-        button_exit_menu.update(screen) 
+        button_exit_menu.update(screen)
         
         # Header and time score
         render_text(screen, (h_w, h_h - 500 * world_pos), "Track " + str(current_track+1) + " completed", 200, pygame.Color("Black"), center=True)
+        render_text(screen, (h_w, h_h - 350 * world_pos), str((int)(finish_time)) + " seconds", 200, pygame.Color("Black"), center=True)
+
+        pygame.display.update()
+    
+    if state == "wingame":
+        screen.fill(bg_color)
+
+        button_exit_menu.update(screen) 
+        
+        # Header and time score
+        render_text(screen, (h_w, h_h - 500 * world_pos), "Last track completed!", 200, pygame.Color("Black"), center=True)
         render_text(screen, (h_w, h_h - 350 * world_pos), str((int)(finish_time)) + " seconds", 200, pygame.Color("Black"), center=True)
         
         pygame.display.update()
@@ -154,7 +170,7 @@ while True:
         raycast_origin = cam.r_pos((player_car.x, player_car.y))
         lengths, intersections = player_car.raycast(raycast_origin, 1500, 25, 120, col_data, cam, debug_mode = debug)
         game_over = player_car.check_collisions(raycast_origin, col_data, cam)
-        win = player_car.check_win(raycast_origin, cam)
+        win = player_car.check_win(raycast_origin, cam, current_track)
         
         if game_over:
             player_car.reset(tracks[current_track][2], tracks[current_track][3])
@@ -162,7 +178,11 @@ while True:
 
         if win:
             finish_time = time
+            win_number += 1
             state = "win"
+
+            if win_number == max_win_number:
+                state = "wingame"
 
 
         # drawing background first
