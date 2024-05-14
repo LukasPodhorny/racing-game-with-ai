@@ -121,15 +121,14 @@ class car_object:
                     return True               
         return False
     
-    def check_reward_gates(self, origin, cam, current_track):
-        col_data = read_col_data("collider_data/track_rewardgate_data_"+str(current_track)+"_0")
+    def check_reward_gates(self, origin, cam, rewardgates_data):
         
         c = cam.r_pos((self.x * world_pos, self.y * world_pos)) 
         d = cam.r_pos(multi_point(self.last_pos, world_pos))
 
-        for j in range(0,(int)(len(col_data)/2)):
-            a = cam.r_pos(col_data[2*j])
-            b = cam.r_pos(col_data[2*j+1])
+        for j in range(0,(int)(len(rewardgates_data)/2)):
+            a = cam.r_pos(rewardgates_data[2*j])
+            b = cam.r_pos(rewardgates_data[2*j+1])
             
             if isIntersection(a, b, c, d):
                 return (2*j , 2*j)                    

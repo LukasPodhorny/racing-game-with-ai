@@ -100,7 +100,7 @@ class RacingEnv(Env):
         # Calculating rewards
         reward = (self.train_car.speed * deltaTime) * 10
 
-        gate_check = self.train_car.check_reward_gates(self.car_origin,self.cam,self.current_track)
+        gate_check = self.train_car.check_reward_gates(self.car_origin,self.cam,self.rewardgates_data)
         
         if gate_check:
             self.rewardgates_data.pop(gate_check[0])
@@ -137,7 +137,6 @@ class RacingEnv(Env):
         
         
         # drawing gizmos for debugging
-        car_col_data = read_col_data("collider_data/car_col_data_0_0")
         
         # drawing track collider boundaries
         for i in range(0,len(self.col_data[0])-1):
@@ -147,10 +146,6 @@ class RacingEnv(Env):
         for i in range(0,(int)(len(self.rewardgates_data)/2)):
             pygame.draw.line(self.screen, pygame.Color("Blue"), self.cam.r_pos(self.rewardgates_data[2*i]), self.cam.r_pos(self.rewardgates_data[2*i+1]), 2)
         
-
-        # drawing car collider
-        for i in range(0,(int)(len(car_col_data)/2)):
-            pygame.draw.line(self.screen, pygame.Color("Green"), add_points(self.car_origin, car_col_data[2*i]), add_points(self.car_origin, car_col_data[2*i+1]), 2)
         pygame.draw.circle(self.screen, pygame.Color("White"), self.car_origin, 3)
         
 
@@ -183,7 +178,7 @@ class RacingEnv(Env):
         self.rewardgates_data = read_col_data("collider_data/track_rewardgate_data_"+str(self.current_track)+"_0")
         
         self.train_car.reset(tracks[self.current_track][2], tracks[self.current_track][3])
-        self.lengths, self.intersections = self.train_car.raycast(self.car_origin,self.max_ray_length, self.max_ray_count, self.spread_angle, self.col_data, self.cam, debug_mode=True)
+        self.lengths, self.intersections = self.train_car.raycast(self.car_origin,self.max_ray_length, self.max_ray_count, self.spread_angle, self.current_track, self.cam, debug_mode=True)
         self.state = self.lengths
 
         # Reset episode length
@@ -244,15 +239,14 @@ def train(timesteps, name, env):
     model_path = os.path.join('Training', 'Saved Models', name)
     model.save(model_path)
 
-
 #----------------CHOOSE WHAT TYPE OF ACTION YOU WANT TO DO HERE----------------
 
 env = RacingEnv(render_mode = "human")
 
 # train(10_000_000,"10_000_000selfdrivingtest", env)
 # test_model("5_000_000selfdrivingtest", env)
-test_env(env)
-# evaluate_policy(PPO.load(os.path.join('Training', 'Saved Models', "5_000_000selfdrivingtest")),env, render = True)
+# test_env(env)
+evaluate_policy(PPO.load(os.path.join('Training', 'Saved Models', "5_000_000selfdrivingtest")),env, render = True)
 # tensorboard --logdir="Training/Logs/PP0_38"
 
 #----------------CHOOSE WHAT TYPE OF ACTION YOU WANT TO DO HERE----------------
