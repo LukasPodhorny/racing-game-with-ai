@@ -62,7 +62,7 @@ class RacingEnv(Env):
 
         # Set start raycast for observations and so on
         self.car_origin = self.cam.r_pos((self.train_car.x, self.train_car.y))    
-        self.lengths, self.intersections = self.train_car.raycast(self.car_origin,self.max_ray_length, self.max_ray_count, self.spread_angle, self.col_data, self.cam, debug_mode=True)
+        self.lengths, self.intersections = self.train_car.raycast(self.car_origin,self.max_ray_length, self.max_ray_count, self.spread_angle, self.current_track, self.cam, debug_mode=True)
         self.state = self.lengths
 
         # Set episode length
@@ -85,8 +85,8 @@ class RacingEnv(Env):
         self.train_car.update_pos(deltaTime, action)
         self.cam.pos = (self.train_car.x - self.h_w, self.train_car.y - self.h_h)
         self.car_origin = self.cam.r_pos((self.train_car.x, self.train_car.y))
-        self.lengths, self.intersections = self.train_car.raycast(self.car_origin, self.max_ray_length, self.max_ray_count, self.spread_angle, self.col_data, self.cam, debug_mode = True)
-        game_over = self.train_car.check_collisions(self.car_origin, self.col_data, self.cam)
+        self.lengths, self.intersections = self.train_car.raycast(self.car_origin, self.max_ray_length, self.max_ray_count, self.spread_angle, self.current_track, self.cam, debug_mode = True)
+        game_over = self.train_car.check_collisions(self.car_origin, self.cam, self.current_track)
         win = self.train_car.check_win(self.car_origin, self.cam, self.current_track)
 
 
@@ -100,7 +100,7 @@ class RacingEnv(Env):
         # Calculating rewards
         reward = (self.train_car.speed * deltaTime) * 10
 
-        gate_check = self.train_car.check_reward_gates(self.car_origin,self.cam,self.rewardgates_data)
+        gate_check = self.train_car.check_reward_gates(self.car_origin,self.cam,self.current_track)
         
         if gate_check:
             self.rewardgates_data.pop(gate_check[0])
@@ -249,9 +249,9 @@ def train(timesteps, name, env):
 
 env = RacingEnv(render_mode = "human")
 
-train(10_000_000,"10_000_000selfdrivingtest", env)
+# train(10_000_000,"10_000_000selfdrivingtest", env)
 # test_model("5_000_000selfdrivingtest", env)
-# test_env(env)
+test_env(env)
 # evaluate_policy(PPO.load(os.path.join('Training', 'Saved Models', "5_000_000selfdrivingtest")),env, render = True)
 # tensorboard --logdir="Training/Logs/PP0_38"
 
