@@ -34,18 +34,18 @@ class RacingEnv(Env):
 
         self.cam = camera((0,0))
 
-        current_track = random.randint(0,len(tracks)-1)
-        self.track_img = make_track(tracks[current_track])
+        self.current_track = random.randint(0,len(tracks)-1)
+        self.track_img = make_track(tracks[self.current_track])
         self.col_line_count = 2
 
         self.col_data = []
         for i in range(0, self.col_line_count):
-            self.col_data.append(read_col_data("collider_data/track_col_data_" + str(current_track) + "_" + str(i)))
+            self.col_data.append(read_col_data("collider_data/track_col_data_" + str(self.current_track) + "_" + str(i)))
         
         
-        self.rewardgates_data = read_col_data("collider_data/track_rewardgate_data_"+str(current_track)+"_0")
+        self.rewardgates_data = read_col_data("collider_data/track_rewardgate_data_"+str(self.current_track)+"_0")
         self.car_img = pygame.transform.smoothscale_by(pygame.image.load("images/car.png").convert_alpha(), car_scale*world_pos)
-        self.train_car = car_module.car_object(self.car_img, tracks[current_track][2], angle = tracks[current_track][3])
+        self.train_car = car_module.car_object(self.car_img, tracks[self.current_track][2], angle = tracks[self.current_track][3])
         self.max_ray_length = 1500
         self.max_ray_count = 25
         self.spread_angle = 120
@@ -87,7 +87,7 @@ class RacingEnv(Env):
         self.car_origin = self.cam.r_pos((self.train_car.x, self.train_car.y))
         self.lengths, self.intersections = self.train_car.raycast(self.car_origin, self.max_ray_length, self.max_ray_count, self.spread_angle, self.col_data, self.cam, debug_mode = True)
         game_over = self.train_car.check_collisions(self.car_origin, self.col_data, self.cam)
-        win = self.train_car.check_win(self.car_origin, self.cam)
+        win = self.train_car.check_win(self.car_origin, self.cam, self.current_track)
 
 
         # Setting new state, cuz it was updated
@@ -167,22 +167,22 @@ class RacingEnv(Env):
     
 
     # Restarting the enviroment
-    def reset(self, options = None):
+    def reset(self, options = None, seed=random.randint(0,10_000)):
         super().reset()
 
         self.last_episode_t = pygame.time.get_ticks()
         self.last_reward_gate = 0
 
-        current_track = random.randint(0,len(tracks)-1)
-        self.track_img = make_track(tracks[current_track])
+        self.current_track = random.randint(0,len(tracks)-1)
+        self.track_img = make_track(tracks[self.current_track])
 
         self.col_data = []    
         for i in range(0, self.col_line_count):
-            self.col_data.append(read_col_data("collider_data/track_col_data_" + str(current_track) + "_" + str(i)))
+            self.col_data.append(read_col_data("collider_data/track_col_data_" + str(self.current_track) + "_" + str(i)))
         
-        self.rewardgates_data = read_col_data("collider_data/track_rewardgate_data_"+str(current_track)+"_0")
+        self.rewardgates_data = read_col_data("collider_data/track_rewardgate_data_"+str(self.current_track)+"_0")
         
-        self.train_car.reset(tracks[current_track][2], tracks[current_track][3])
+        self.train_car.reset(tracks[self.current_track][2], tracks[self.current_track][3])
         self.lengths, self.intersections = self.train_car.raycast(self.car_origin,self.max_ray_length, self.max_ray_count, self.spread_angle, self.col_data, self.cam, debug_mode=True)
         self.state = self.lengths
 
@@ -249,8 +249,8 @@ def train(timesteps, name, env):
 
 env = RacingEnv(render_mode = "human")
 
-# train(5_000_000,"5_000_000selfdrivingtest", env)
-test_model("5_000_000selfdrivingtest", env)
+train(10_000_000,"10_000_000selfdrivingtest", env)
+# test_model("5_000_000selfdrivingtest", env)
 # test_env(env)
 # evaluate_policy(PPO.load(os.path.join('Training', 'Saved Models', "5_000_000selfdrivingtest")),env, render = True)
 # tensorboard --logdir="Training/Logs/PP0_38"

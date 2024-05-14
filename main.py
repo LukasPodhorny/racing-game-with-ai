@@ -5,6 +5,7 @@ from pygame.locals import *
 from camera import *
 from settings import *
 from usefulfunctions import *
+from stable_baselines3 import PPO
 
 # Initialization
 pygame.init()
@@ -40,6 +41,7 @@ setup_track(current_track)
 # Setting up car object
 car_img = pygame.transform.smoothscale_by(pygame.image.load("images/car.png").convert_alpha(), car_scale*world_pos)
 player_car = car_module.car_object(car_img, tracks[current_track][2], angle = tracks[current_track][3])
+ai_car = car_module.car_object(car_img, tracks[current_track][2], angle = tracks[current_track][3])
 
 
 # Time variables
@@ -72,6 +74,7 @@ def next_track():
 
     setup_track(current_track)
     player_car.reset(tracks[current_track][2], tracks[current_track][3])
+    ai_car.reset(tracks[current_track][2], tracks[current_track][3])
 def train():
     global state
     state = "train"
@@ -166,6 +169,8 @@ while True:
 
         # updating
         player_car.update_pos(deltaTime)
+        ai_car.update_pos(deltaTime)
+        
         cam.pos = (player_car.x - h_w, player_car.y - h_h)
         raycast_origin = cam.r_pos((player_car.x, player_car.y))
         lengths, intersections = player_car.raycast(raycast_origin, 1500, 25, 120, col_data, cam, debug_mode = debug)
