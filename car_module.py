@@ -11,6 +11,7 @@ class car_object:
         self.x = start_pos[0]
         self.y = start_pos[1]
         self.pos = (self.x, self.y)
+        self.last_pos = (self.x, self.y)
         self.angle = angle
 
         self.speed = 0
@@ -59,7 +60,10 @@ class car_object:
         img_rect = img.get_rect(center = (self.x, self.y))
         camera.blit(screen, img, img_rect)
 
-    def raycast(self, origin, max_length, line_count, spread_angle, col_data, cam, offset = (0,0), debug_mode = False):
+    def raycast(self, origin, max_length, line_count, spread_angle, current_track, cam, offset = (0,0), debug_mode = False):
+        col_data = [read_col_data("collider_data/track_col_data_"+str(current_track)+"_0"), 
+                    read_col_data("collider_data/track_col_data_"+str(current_track)+"_1")]
+        
         new_origin = add_points(origin, offset)
         
         lengths = []
@@ -98,60 +102,53 @@ class car_object:
         if debug_mode:
             return lengths, end_points
         
-        return length, None
+        return lengths, None
 
-    def check_collisions(self, origin, col_data, cam):
-        # car_col_data is a separeted line data, not connected, cuz it's better
-        car_col_data = read_col_data("collider_data/car_col_data_0_0")
+    def check_collisions(self, origin, cam, current_track):
+        col_data = [read_col_data("collider_data/track_col_data_"+str(current_track)+"_0"), 
+                    read_col_data("collider_data/track_col_data_"+str(current_track)+"_1")]
 
-        for i in range(0, (int)(len(car_col_data)/2)): 
-            c = add_points(origin,car_col_data[2*i])
-            d = add_points(origin,car_col_data[2*i+1])
+        c = cam.r_pos((self.x * world_pos, self.y * world_pos)) 
+        d = cam.r_pos(multi_point(self.last_pos, world_pos))
 
-            for line_data in col_data:
+        for line_data in col_data:
+            
+            for j in range(0, len(line_data)-1):
                 
-                for j in range(0, len(line_data)-1):
-                    
-                    a = cam.r_pos(line_data[j  ])
-                    b = cam.r_pos(line_data[j+1])
-
-                    if isIntersection(a, b, c, d):
-                        return True               
+                a = cam.r_pos(line_data[j  ])
+                b = cam.r_pos(line_data[j+1])
+                if isIntersection(a, b, c, d):
+                    return True               
         return False
     
-    def check_reward_gates(self, origin, cam, rewardgates_data):
-        # car_col_data is a separeted line data, not connected, cuz it's better
-        car_col_data = read_col_data("collider_data/car_col_data_0_0")
-        line_data = rewardgates_data
+    def check_reward_gates(self, origin, cam, current_track):
+        col_data = read_col_data("collider_data/track_rewardgate_data_"+str(current_track)+"_0")
+        
+        c = cam.r_pos((self.x * world_pos, self.y * world_pos)) 
+        d = cam.r_pos(multi_point(self.last_pos, world_pos))
 
-        for j in range(0,(int)(len(line_data)/2)):
-            for i in range(0, (int)(len(car_col_data)/2)): 
-                c = add_points(origin,car_col_data[2*i])
-                d = add_points(origin,car_col_data[2*i+1])
-                a = cam.r_pos(line_data[2*j])
-                b = cam.r_pos(line_data[2*j+1])
-
-                if isIntersection(a, b, c, d):
-                    return (2*j , 2*j)                    
+        for j in range(0,(int)(len(col_data)/2)):
+            a = cam.r_pos(col_data[2*j])
+            b = cam.r_pos(col_data[2*j+1])
+            
+            if isIntersection(a, b, c, d):
+                return (2*j , 2*j)                    
         return None
     
     def check_win(self, origin, cam, current_track):
-        # car_col_data is a separeted line data, not connected, cuz it's better
-        car_col_data = read_col_data("collider_data/car_col_data_0_0")
-        line_data = read_col_data("collider_data/track_win_data_"+str(current_track)+"_0")
+        col_data = read_col_data("collider_data/track_win_data_"+str(current_track)+"_0")
+ 
+        c = cam.r_pos((self.x * world_pos, self.y * world_pos)) 
+        d = cam.r_pos(multi_point(self.last_pos, world_pos))
+        a = cam.r_pos(col_data[0])
+        b = cam.r_pos(col_data[1])
 
-        for i in range(0, (int)(len(car_col_data)/2)): 
-            c = add_points(origin,car_col_data[2*i])
-            d = add_points(origin,car_col_data[2*i+1])
-            a = cam.r_pos(line_data[0])
-            b = cam.r_pos(line_data[1])
-
-            return isIntersection(a, b, c, d)                     
-        return False
+        return isIntersection(a, b, c, d)                     
 
         
     def update_pos(self, deltaTime, ai_input = None):
-        
+        self.last_pos = (self.x, self.y)
+
         # input will provide either person or ai model
         if ai_input is None:
             input = car_object.get_input()
