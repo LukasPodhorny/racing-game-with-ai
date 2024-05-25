@@ -190,19 +190,23 @@ def test_model(name, episodes=5):
 #----------------CHOOSE WHAT TYPE OF ACTION YOU WANT TO DO HERE----------------
 
 # VECTORIZED ENVIROMENT
-#if __name__ == "__main__":
-#    num_envs = 10
-#    envs = SubprocVecEnv([make_env("RacingEnv", i) for i in range(num_envs)])
-#    train(30000, "30000_selfdrivingtest_2", envs)
-
-#    NON-VECTORIZED ENVIROMENT
-#    env = RacingEnv(render_mode="human")
-#    train(10_000_000,"10_000_000selfdrivingtest", env)
+'''
+if __name__ == "__main__":
+    num_envs = 10
+    envs = SubprocVecEnv([make_env("RacingEnv", i) for i in range(num_envs)])
+    train(500_000, "500_000_selfdrivingtest", envs)
+'''
+    
+# NON-VECTORIZED ENVIROMENT
+# env = RacingEnv(render_mode="human")
+# train(10_000_000,"10_000_000selfdrivingtest", env)
+#
+# TESTING    
+# test_model("500_000_selfdrivingtest")
+# test_env(env)
+# evaluate_policy(PPO.load(os.path.join('Training', 'Saved Models', "500_000_selfdrivingtest")),env, render = True)
 #    
-#    test_model("30000_selfdrivingtest_2")
-#    test_env(env)
-#    evaluate_policy(PPO.load(os.path.join('Training', 'Saved Models', "10_000_000selfdrivingtest")),env, render = True)
-#    
-#    tensorboard --logdir="Training/Logs/PP0_38"
+# VIEWING LOGS
+# tensorboard --logdir="Training/Logs/PP0_38"
 
 #----------------CHOOSE WHAT TYPE OF ACTION YOU WANT TO DO HERE----------------
