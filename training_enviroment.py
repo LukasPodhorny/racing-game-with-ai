@@ -244,7 +244,7 @@ def train(timesteps, name, env):
 env = RacingEnv(render_mode = "human")
 
 # train(10_000_000,"10_000_000selfdrivingtest", env)
-# test_model("5_000_000selfdrivingtest", env)
+test_model("5_000_000selfdrivingtest", env)
 # test_env(env)
 # evaluate_policy(PPO.load(os.path.join('Training', 'Saved Models', "5_000_000selfdrivingtest")),env, render = True)
 # tensorboard --logdir="Training/Logs/PP0_38"

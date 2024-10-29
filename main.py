@@ -257,8 +257,10 @@ while True:
                 i = 0  
                 for intersection in intersections:
                     pygame.draw.line(screen, raycast_color, ai_origin, intersection, 1)
+
                     if lengths[i] < 1500:
                         pygame.draw.circle(screen, pygame.Color("White"), intersection, 5)
+                        
                     i += 1
 
             render_text(screen, (screen.get_width() - 90 * world_pos, 0), "fps: " + str(int(fpsClock.get_fps())), size=40, color = pygame.Color("Purple"))
