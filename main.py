@@ -39,7 +39,7 @@ player_car = car_module.car_object(car_img, tracks[current_track][2], angle = tr
 ai_car = car_module.car_object(car_img, tracks[current_track][2], angle = tracks[current_track][3])
 ai_origin = cam.r_pos((ai_car.x, ai_car.y))
 lengths, intersections = ai_car.raycast(ai_origin, 1500, 25, 120, current_track, cam, debug_mode = debug)
-path = os.path.join('Training', 'Saved Models', '5_000_000selfdrivingtest')
+path = os.path.join('Training', 'Saved Models', '30_000selfdrivingtest_2')
 model = PPO.load(path)
 
 
