@@ -104,12 +104,10 @@ class car_object:
         
         return lengths, None
 
-    def check_collisions(self, origin, cam, current_track):
-        col_data = [read_col_data("collider_data/track_col_data_"+str(current_track)+"_0"), 
-                    read_col_data("collider_data/track_col_data_"+str(current_track)+"_1")]
+    def check_collisions(self, origin, cam, col_data):
 
-        c = cam.r_pos((self.x * world_pos, self.y * world_pos)) 
-        d = cam.r_pos(multi_point(self.last_pos, world_pos))
+        c = cam.r_pos((self.x, self.y)) 
+        d = cam.r_pos(self.last_pos)
 
         for line_data in col_data:
             
@@ -123,8 +121,8 @@ class car_object:
     
     def check_reward_gates(self, origin, cam, rewardgates_data):
         
-        c = cam.r_pos((self.x * world_pos, self.y * world_pos)) 
-        d = cam.r_pos(multi_point(self.last_pos, world_pos))
+        c = cam.r_pos((self.x, self.y)) 
+        d = cam.r_pos(self.last_pos, world_pos)
 
         for j in range(0,(int)(len(rewardgates_data)/2)):
             a = cam.r_pos(rewardgates_data[2*j])
@@ -137,8 +135,8 @@ class car_object:
     def check_win(self, origin, cam, current_track):
         col_data = read_col_data("collider_data/track_win_data_"+str(current_track)+"_0")
  
-        c = cam.r_pos((self.x * world_pos, self.y * world_pos)) 
-        d = cam.r_pos(multi_point(self.last_pos, world_pos))
+        c = cam.r_pos((self.x, self.y)) 
+        d = cam.r_pos(self.last_pos)
         a = cam.r_pos(col_data[0])
         b = cam.r_pos(col_data[1])
 

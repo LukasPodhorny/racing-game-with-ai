@@ -13,6 +13,10 @@ pygame.init()
 pygame.display.set_caption("racing game")
 fpsClock = pygame.time.Clock()
 
+debug = False
+if len(sys.argv) > 1:
+    debug = sys.argv[1] == "--debug"
+
 
 # Setting up screen
 screen = pygame.display.set_mode(true_res,pygame.FULLSCREEN,vsync=1)
@@ -206,10 +210,10 @@ while True:
         player_origin = cam.r_pos((player_car.x, player_car.y))
         lengths, intersections = ai_car.raycast(ai_origin, 1500, 25, 120, current_track, cam, debug_mode = debug)
         
-        game_over = player_car.check_collisions(player_origin, cam, current_track)
+        game_over = player_car.check_collisions(player_origin, cam, col_data)
         win = player_car.check_win(player_origin, cam, current_track)
 
-        ai_game_over = ai_car.check_collisions(ai_origin, cam, current_track)
+        ai_game_over = ai_car.check_collisions(ai_origin, cam, col_data)
         ai_win = ai_car.check_win(ai_origin, cam, current_track)
         
         if game_over:
